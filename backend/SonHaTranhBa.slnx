@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/SonHaTranhBa.Game.Core/SonHaTranhBa.Game.Core.csproj" />
+  <Project Path="src/SonHaTranhBa.Server/SonHaTranhBa.Server.csproj" />
+</Solution>
