@@ -1,3 +1,15 @@
+# Sơn Hà Tranh Bá — Phase 2 Map Engine
+
+**Phase 2 hiện có:** trên bản đồ 2D gốc, có 12 vùng polygon bản nháp, hover làm nổi địa giới, click chọn vùng, camera kéo/zoom, chế độ địa hình/chủ quyền/tài nguyên và panel thông tin trấn. Hệ thống API/SignalR/PostgreSQL của Phase 1 giữ nguyên.
+
+**Chạy thử:** `Copy-Item .env.example .env` (Windows, thực hiện một lần), sau đó `docker compose up --build -d` và mở http://localhost:8080. Chi tiết điều khiển và giới hạn: [docs/PHASE2_MAP_ENGINE.md](docs/PHASE2_MAP_ENGINE.md).
+
+**Kiểm tra polygon:** `cd frontend && node --experimental-strip-types --test scripts/territories.test.mjs` (Node 22+).
+
+> Các vùng/chủ quyền/tài nguyên là **dữ liệu minh họa**, không phải gameplay hoặc bản đồ biên giới chính thức. Chưa có logic kinh tế, quân đội, tìm đường, AI lãnh chúa hay PvP.
+
+---
+
 # SƠN HÀ TRANH BÁ — GIAI ĐOẠN 1: GAME FOUNDATION
 
 **Mục tiêu:** bộ khung dự án game chiến thuật web 2D có thể khởi động bằng Docker Compose. Đây là code Phase 1, **chưa phải một trò chơi hoàn chỉnh**.

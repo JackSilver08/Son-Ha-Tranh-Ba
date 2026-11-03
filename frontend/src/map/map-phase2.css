@@ -1,0 +1,35 @@
+/* Phase 2 map engine. Keep the Phase 1 visual language and diagnostics. */
+.map-frame--interactive { cursor: grab; }
+.map-frame--interactive:active { cursor: grabbing; }
+.map-host canvas { touch-action: none; outline-offset: -4px; }
+.map-host canvas:focus-visible { outline: 3px solid #e5c78f; }
+.map-toolbar { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
+.map-tab { border: 1px solid #7a795c; background: #29382d; color: #d4c8a8; font-size: 11px; letter-spacing: .5px; padding: 9px 15px; cursor: pointer; }
+.map-tab:hover { border-color: #d0ad78; }
+.map-tab--active { background: #e1d0a9; color: #362d20; border-color: #e1d0a9; font-weight: 750; }
+.map-tooltip { position: absolute; z-index: 3; pointer-events: none; top: 14px; left: 14px; display: grid; gap: 4px; padding: 12px 15px; border: 1px solid #c7a875; background: #f0dfbcf0; box-shadow: 0 10px 26px #0005; color: #362b20; }
+.map-tooltip b { font: 18px Georgia,serif; }
+.map-tooltip span { font-size: 12px; }
+.map-tooltip small { font-size: 10px; color: #7b5c43; }
+.camera-controls { position: absolute; z-index: 4; top: 14px; right: 14px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.camera-controls button { width: 36px; height: 36px; border: 1px solid #d4b989; background: #ead9b9ed; color: #3e3324; cursor: pointer; font: 24px Georgia,serif; }
+.camera-controls button:hover { background: #fff0cf; }
+.camera-controls span { padding: 3px 7px; color: #fff0d3; background: #2a261dbb; font-size: 10px; }
+.province-title { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+.faction-mark { font-size: 10px; font-weight: 700; }
+.faction-mark--west { color: #326d59; } .faction-mark--east { color: #9c4535; } .faction-mark--neutral { color: #93733b; }
+.province-stat { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; border-bottom: 1px dashed #c8b590; padding: 10px 0; font-size: 11px; }
+.province-stat span { color: #72634f; } .province-stat strong { text-align: right; }
+.paper-card .province-note { margin: 15px 0; font-size: 11px; }
+.province-placeholder { color: #7f6645; text-align: center; border: 1px dashed #bba477; padding: 18px 8px; font-size: 12px; }
+.outline-button { border: 1px solid #9a5947; background: transparent; color: #833e32; width: 100%; padding: 10px; cursor: pointer; font-size: 11px; font-weight: 700; }
+.outline-button:hover { background: #ead0ad; }
+.territory-list { max-height: 290px; overflow: auto; display: grid; gap: 2px; }
+.territory-list-item { display: flex; align-items: center; gap: 8px; text-align: left; border: 0; padding: 9px 5px; background: transparent; cursor: pointer; color: #3f3528; font-size: 11px; }
+.territory-list-item:hover, .territory-list-item--active { background: #d6c49d; }
+.territory-list-item small { margin-left: auto; color: #7b6b52; font-size: 9px; }
+.territory-dot { flex: 0 0 9px; width: 9px; height: 9px; border-radius: 50%; }
+.territory-dot--west { background: #56846d; } .territory-dot--east { background: #b7654e; } .territory-dot--neutral { background: #b7a271; }
+.diagnostics-card summary { cursor: pointer; font-size: 12px; font-weight: 750; }
+.diagnostics-card[open] summary { margin-bottom: 11px; }
+@media (max-width: 690px) { .map-tooltip { top: 8px; left: 8px; padding: 7px 9px; } .map-tooltip b { font-size: 14px; } .camera-controls { right: 8px; top: 8px; } .camera-controls button { width: 30px; height: 30px; font-size: 19px; } .map-tab { padding: 8px 11px; } }
