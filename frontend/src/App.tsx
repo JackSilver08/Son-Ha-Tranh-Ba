@@ -34,7 +34,7 @@ export default function App() {
         <section className="main-panel" aria-labelledby="map-title">
           <div className="panel-heading">
             <div><span className="eyebrow">ĐỊA GIỚI THỬ NGHIỆM</span><h2 id="map-title">Bản đồ giang sơn</h2></div>
-            <span className="heading-tag"><span className="heading-tag-dot" /> 12 trấn · Polygon 2D</span>
+            <span className="heading-tag"><span className="heading-tag-dot" /> 6 vùng · Polygon 2D</span>
           </div>
           <div className="map-toolbar" role="group" aria-label="Lớp bản đồ">
             {(Object.keys(modeLabels) as MapMode[]).map((mode) =>
@@ -55,7 +55,7 @@ export default function App() {
               <button type="button" onClick={() => camera('reset')} aria-label="Đặt lại camera" title="Về toàn bản đồ">⌂</button>
               <span>{Math.round(zoom * 100)}%</span>
             </div>
-            <div className="map-label">THỬ NGHIỆM ĐỊA GIỚI · PHASE 2</div>
+            <div className="map-label">BẢN ĐỒ MỚI · 6 VÙNG</div>
           </div>
           <div className="map-caption">
             <span>Kéo để di chuyển · Cuộn để zoom vào điểm trỏ · Nhấp để chọn vùng</span>
@@ -76,9 +76,9 @@ export default function App() {
               <button type="button" className="outline-button" onClick={() => setSelected(null)}>Bỏ chọn lãnh thổ</button>
             </> : <>
               <h2>Chọn một vùng đất</h2>
-              <p>Rê chuột vào bản đồ để nhìn thấy địa giới. Nhấp một trấn để xem chủ quyền mẫu và tiềm năng khai thác.</p>
+              <p>Bản đồ được thiết kế mới gồm hai kinh đô và bốn trấn. Rê chuột vào mỗi vùng để nhìn thấy địa giới; nhấp để xem thông tin.</p>
               <div className="paper-rule" />
-              <div className="province-placeholder">12 vùng mẫu · 2 kinh đô · 10 trấn</div>
+              <div className="province-placeholder">6 vùng · 2 kinh đô · 4 trấn</div>
             </>}
           </section>
           <section className="paper-card territories-card">
@@ -103,7 +103,7 @@ export default function App() {
           </details>
         </aside>
       </main>
-      <footer className="site-footer"><span>SƠN HÀ TRANH BÁ · BẢN ĐỒ THỬ NGHIỆM</span><span>Phase 2 — Chưa có gameplay hoặc phân vùng chính thức</span></footer>
+      <footer className="site-footer"><span>SƠN HÀ TRANH BÁ · BẢN ĐỒ THỬ NGHIỆM</span><span>Phase 2 — Bản đồ 2D mới; chưa có gameplay</span></footer>
     </div>
   );
 }

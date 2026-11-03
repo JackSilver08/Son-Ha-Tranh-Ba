@@ -33,3 +33,7 @@
 .diagnostics-card summary { cursor: pointer; font-size: 12px; font-weight: 750; }
 .diagnostics-card[open] summary { margin-bottom: 11px; }
 @media (max-width: 690px) { .map-tooltip { top: 8px; left: 8px; padding: 7px 9px; } .map-tooltip b { font-size: 14px; } .camera-controls { right: 8px; top: 8px; } .camera-controls button { width: 30px; height: 30px; font-size: 19px; } .map-tab { padding: 8px 11px; } }
+
+/* Custom 2D world instead of imported screenshot. */
+.map-frame--interactive { aspect-ratio: 5 / 3; max-height: 76vh; }
+@media(max-width:690px) { .map-frame--interactive { aspect-ratio: 4 / 3; max-height: none; } }

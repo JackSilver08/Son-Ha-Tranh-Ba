@@ -1,12 +1,12 @@
-# Sơn Hà Tranh Bá — Phase 2 Map Engine
+# Sơn Hà Tranh Bá — Phase 2: Bản đồ 2D tự thiết kế, 6 vùng
 
-**Phase 2 hiện có:** trên bản đồ 2D gốc, có 12 vùng polygon bản nháp, hover làm nổi địa giới, click chọn vùng, camera kéo/zoom, chế độ địa hình/chủ quyền/tài nguyên và panel thông tin trấn. Hệ thống API/SignalR/PostgreSQL của Phase 1 giữ nguyên.
+Bản đồ trước là hình tham khảo, **không còn sử dụng làm nền chạy game**. Bản đồ thay thế là SVG 2D nguyên bản gồm biển, đất, rừng, ruộng, làng, dãy núi và hai kinh đô. Có 6 vùng lãnh thổ chia thành 3 vùng mỗi phe, mỗi vùng là một polygon có thể hover, click, xem thông tin; zoom/pan và ba lớp bản đồ giữ nguyên. Các lớp tương tác nằm trong PixiJS.
 
-**Chạy thử:** `Copy-Item .env.example .env` (Windows, thực hiện một lần), sau đó `docker compose up --build -d` và mở http://localhost:8080. Chi tiết điều khiển và giới hạn: [docs/PHASE2_MAP_ENGINE.md](docs/PHASE2_MAP_ENGINE.md).
+**Tọa độ chuẩn:** 1200×720, chung cho ảnh vector và `frontend/src/map/six-provinces.json`. Dữ liệu JSON là nguồn duy nhất cho hình học bờ biển/6 polygon. Ranh giới này là bản chơi thử; chưa xử lý pathfinding hay núi cản đường.
 
-**Kiểm tra polygon:** `cd frontend && node --experimental-strip-types --test scripts/territories.test.mjs` (Node 22+).
+**Khởi chạy:** từ thư mục gốc, `docker compose up --build -d`, mở http://localhost:8080. Test hình học: `cd frontend && npm run test:map`.
 
-> Các vùng/chủ quyền/tài nguyên là **dữ liệu minh họa**, không phải gameplay hoặc bản đồ biên giới chính thức. Chưa có logic kinh tế, quân đội, tìm đường, AI lãnh chúa hay PvP.
+**Giới hạn:** chủ quyền, tài nguyên, kinh tế và lãnh chúa vẫn là minh họa. Server .NET, SignalR, PostgreSQL, Docker/Nginx không thay đổi. Mã nguồn ảnh có thể tạo lại hoặc chỉnh sửa ở `frontend/public/assets/son-ha-world.svg` và `frontend/src/map/six-provinces.json`.
 
 ---
 

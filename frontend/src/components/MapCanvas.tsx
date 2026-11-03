@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Application, Assets, Container, Graphics, Sprite } from 'pixi.js';
+import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js';
 import { MAP_HEIGHT, MAP_WIDTH, TERRITORIES, territoryAt, type MapMode, type Territory } from '../map/territories';
 
 export type CameraCommand = 'reset' | 'zoom-in' | 'zoom-out';
@@ -58,12 +58,12 @@ function repaint(scene: Scene, mode: MapMode, selectedId: string | null) {
       : COLORS[territory.faction];
     const graphic = scene.overlays[index];
     graphic.clear().poly(territory.polygon, true)
-      .fill({ color: fill, alpha: selected ? 0.27 : hovered ? 0.21 : overview ? 0.17 : 0.001 });
-    if (selected || hovered || overview) {
+      .fill({ color: fill, alpha: selected ? 0.29 : hovered ? 0.19 : overview ? 0.17 : 0.008 });
+    if (selected || hovered || overview || mode === 'natural') {
       graphic.poly(territory.polygon, true).stroke({
         color: selected ? 0xf9d891 : hovered ? 0xffebbc : 0xf0ddb0,
-        alpha: selected ? 1 : hovered ? 0.95 : 0.49,
-        width: selected ? 3 : hovered ? 2.2 : 1,
+        alpha: selected ? 1 : hovered ? 0.95 : overview ? 0.56 : 0.28,
+        width: selected ? 3 : hovered ? 2.2 : overview ? 1.2 : 0.9,
       });
     }
   });
@@ -117,7 +117,7 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, onSelect, onHover,
       if (cancelled) { next.destroy(true); return; }
       app = next;
       host.appendChild(next.canvas);
-      const texture = await Assets.load('/assets/map-reference.png');
+      const texture = await Assets.load('/assets/son-ha-world.svg');
       if (cancelled) return;
       const world = new Container();
       world.addChild(new Sprite(texture));
@@ -126,6 +126,22 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, onSelect, onHover,
         world.addChild(graphic);
         return graphic;
       });
+      // Labels are map-space children, so zoom/pan always remain aligned.
+      for (const territory of TERRITORIES) {
+        const label = new Text({ text: territory.name.toUpperCase(), style: {
+          fontFamily: 'Georgia, serif', fontSize: 14, fontWeight: 'bold',
+          fill: 0xf1e2bd, letterSpacing: 0.8
+        } });
+        label.anchor.set(0.5);
+        const plate = new Graphics();
+        plate.roundRect(-(label.width + 26) / 2, -15, label.width + 26, 30, 4)
+          .fill({ color: 0x27352b, alpha: 0.9 })
+          .stroke({ color: territory.faction === 'west' ? 0x9ab49b : 0xd1aa8c, width: 1 });
+        const badge = new Container();
+        badge.position.set(territory.center.x, territory.center.y + (territory.kind === 'Kinh đô' ? 64 : territory.id.includes('bac') ? 56 : 37));
+        badge.addChild(plate, label);
+        world.addChild(badge);
+      }
       next.stage.addChild(world);
       const scene: Scene = {
         app: next, world, overlays,
@@ -162,18 +178,18 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, onSelect, onHover,
         return { x: (event.clientX - rect.left) * scene.viewWidth / rect.width, y: (event.clientY - rect.top) * scene.viewHeight / rect.height };
       };
       const hit = (x: number, y: number) => territoryAt({ x: (x - world.x) / world.scale.x, y: (y - world.y) / world.scale.y });
-      let drag: { id: number; x: number; y: number; moved: boolean } | null = null;
+      let drag: { id: number; x: number; y: number; originX: number; originY: number; moved: boolean } | null = null;
       const down = (e: PointerEvent) => {
         if (e.button !== 0 || drag) return;
         const p = position(e);
-        drag = { id: e.pointerId, x: p.x, y: p.y, moved: false };
+        drag = { id: e.pointerId, x: p.x, y: p.y, originX: p.x, originY: p.y, moved: false };
         next.canvas.setPointerCapture(e.pointerId);
       };
       const move = (e: PointerEvent) => {
         const p = position(e);
         if (drag && drag.id === e.pointerId) {
           const dx = p.x - drag.x; const dy = p.y - drag.y;
-          if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+          if (Math.hypot(p.x - drag.originX, p.y - drag.originY) > 5) drag.moved = true;
           if (drag.moved) {
             world.x += dx;
             world.y += dy;
