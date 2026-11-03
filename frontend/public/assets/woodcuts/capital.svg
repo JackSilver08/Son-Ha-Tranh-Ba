@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Kinh đô · Cổng thành Đại Việt</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M14 94Q65 86 114 95L110 106Q64 115 17 104Z" fill="#796C51" stroke-width="2"/>
+<path d="M23 60L105 60L106 94Q65 101 22 94Z" fill="url(#paper)"/>
+<path d="M16 57Q26 53 32 46Q39 57 48 46Q57 56 65 44Q74 57 81 45Q88 55 96 44L113 57L106 66Q65 57 22 67Z" fill="url(#red)"/>
+<path d="M32 37Q46 33 51 24Q64 34 77 24Q87 34 96 37L104 44Q65 37 24 46Z" fill="#B89054"/>
+<path d="M29 38L99 38L104 48Q62 43 24 49Z" fill="url(#red)"/>
+<path d="M35 32Q47 28 48 24M79 24Q83 28 94 32M64 20V25" stroke="#F1D6A0" stroke-width="2"/>
+<path d="M29 64V89M101 64V91" stroke="#735A42" stroke-width="3"/>
+<path d="M41 65V92M86 65V92" stroke="#735A42" stroke-width="2"/>
+<path d="M51 93V79Q64 63 77 79V94Z" fill="#4B3E33"/>
+<path d="M64 72V94" stroke="#B38C62" stroke-width="2"/>
+<path d="M20 69H108M24 86H44M84 86H103" stroke="#AD8657" stroke-width="1.7"/>
+<path d="M14 68L14 44L18 36L22 44V73M110 68V43L114 36L118 43V73" fill="#BAA57B" stroke-width="2"/>
+<path d="M14 45L14 32M114 44V27" stroke-width="2"/>
+<path d="M114 28L127 32L114 38Z" fill="url(#green)" stroke-width="2"/>
+<path d="M13 103Q62 108 116 103" stroke="#F4E2BB" stroke-width="2"/>
+</g></svg>

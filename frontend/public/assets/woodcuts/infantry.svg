@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Bộ binh · Thuẫn giáo</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M25 112L98 14" stroke="#655440" stroke-width="7"/>
+<path d="M98 11L106 30L89 28Z" fill="#B1A990"/>
+<path d="M17 25L107 112" stroke="#66523E" stroke-width="6"/>
+<path d="M13 17L31 20L28 35Z" fill="#C3AF82"/>
+<path d="M31 55Q64 36 93 56L87 91Q77 106 64 115Q48 106 38 92Z" fill="url(#green)"/>
+<path d="M42 59Q63 48 86 59L81 88Q73 100 64 105Q53 99 46 86Z" fill="#E1C990" stroke="#AD8A52" stroke-width="2"/>
+<path d="M63 60V101M46 80H83" stroke="#9B6341" stroke-width="4"/>
+<circle cx="64" cy="80" r="9" fill="url(#brass)"/>
+<path d="M58 78L64 71L70 79L64 87Z" fill="#8E4436" stroke-width="1.5"/>
+</g></svg>

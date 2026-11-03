@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Kỵ sĩ · Kỵ mã</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M20 106L30 88L22 55L33 31L51 20L59 33L76 39L83 55L73 66L63 61L56 75L64 108Z" fill="url(#brass)"/>
+<path d="M32 34Q19 39 19 56L26 68L36 62L39 76" fill="url(#green)"/>
+<path d="M43 31L40 17L53 22L60 35" fill="#AE7950"/>
+<path d="M70 41L91 49L91 57L80 61" fill="#B7A782"/>
+<path d="M75 53L88 54" stroke="#3C352C" stroke-width="3"/>
+<circle cx="61" cy="46" r="3.6" fill="#302C26" stroke="none"/>
+<path d="M54 74Q75 80 90 74L105 85L99 105L81 99L67 115Z" fill="url(#red)"/>
+<path d="M52 73Q69 86 92 76" stroke="#F0D59C" stroke-width="3"/>
+<path d="M96 93L108 70M108 69L116 77L100 78Z" fill="#D7C39C"/>
+</g></svg>

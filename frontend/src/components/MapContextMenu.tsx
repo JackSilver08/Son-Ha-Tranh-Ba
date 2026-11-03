@@ -1,5 +1,6 @@
 import { useEffect, useRef, type KeyboardEvent } from 'react';
 import type { MapMode, Territory } from '../map/territories';
+import { GameGlyph, type WoodcutName } from './GameGlyph';
 
 export type QuickAction = 'inspect' | 'focus' | 'mark' | 'clear-mark' | 'reset'
   | 'natural' | 'political' | 'resources';
@@ -18,18 +19,18 @@ type Props = {
 };
 
 type ItemProps = {
-  symbol: string;
+  icon: WoodcutName;
   label: string;
   detail?: string;
   current?: boolean;
   disabled?: boolean;
   onClick?: () => void;
 };
-function Action({ symbol, label, detail, current, disabled, onClick }: ItemProps) {
+function Action({ icon, label, detail, current, disabled, onClick }: ItemProps) {
   return (
     <button type="button" role="menuitem" className={`quick-menu-item${current ? ' quick-menu-item--current' : ''}`}
       disabled={disabled} onClick={onClick} title={disabled ? 'Sẽ hoạt động khi gameplay được triển khai' : undefined}>
-      <span className="quick-menu-symbol" aria-hidden="true">{symbol}</span>
+      <span className="quick-menu-symbol"><GameGlyph name={icon} /></span>
       <span className="quick-menu-item-copy"><strong>{label}</strong>{detail && <small>{detail}</small>}</span>
       {current && <span className="quick-menu-check" aria-hidden="true">✓</span>}
       {disabled && <span className="quick-menu-lock" aria-hidden="true">⌁</span>}
@@ -61,35 +62,35 @@ export function MapContextMenu({ menu, mode, hasMarker, onAction, onClose }: Pro
       style={{ left: menu.x, top: menu.y }} onKeyDown={handleKeys}
       onPointerDown={event => event.stopPropagation()} onContextMenu={event => event.preventDefault()}>
       <div className="quick-menu-heading">
-        <span className="quick-menu-seal" aria-hidden="true">令</span>
+        <span className="quick-menu-seal"><GameGlyph name="order" /></span>
         <span><small>QUÂN LỆNH NHANH</small><strong>{menu.territory?.name ?? 'Toàn sa bàn'}</strong></span>
         <button type="button" className="quick-menu-close" onClick={onClose} aria-label="Đóng menu">×</button>
       </div>
       {menu.territory && <>
         <div className="quick-menu-section">LÃNH THỔ</div>
-        <Action symbol="▤" label="Xem địa chí" detail="Mở thông tin vùng" onClick={() => onAction('inspect')}/>
-        <Action symbol="⌖" label="Định vị vùng" detail="Di chuyển camera tới trấn" onClick={() => onAction('focus')}/>
+        <Action icon="map" label="Xem địa chí" detail="Mở thông tin vùng" onClick={() => onAction('inspect')}/>
+        <Action icon="locate" label="Định vị vùng" detail="Di chuyển camera tới trấn" onClick={() => onAction('focus')}/>
       </>}
       <div className="quick-menu-section">SA BÀN</div>
-      <Action symbol="⚑" label="Đặt dấu chỉ huy" detail="Ghim dấu tạm tại vị trí này" onClick={() => onAction('mark')}/>
-      {hasMarker && <Action symbol="×" label="Xóa dấu chỉ huy" onClick={() => onAction('clear-mark')}/>}
-      <Action symbol="⌂" label="Xem toàn bản đồ" onClick={() => onAction('reset')}/>
+      <Action icon="flag" label="Đặt dấu chỉ huy" detail="Ghim dấu tạm tại vị trí này" onClick={() => onAction('mark')}/>
+      {hasMarker && <Action icon="flag" label="Xóa dấu chỉ huy" onClick={() => onAction('clear-mark')}/>}
+      <Action icon="locate" label="Xem toàn bản đồ" onClick={() => onAction('reset')}/>
       <div className="quick-menu-section">CHẾ ĐỘ QUAN SÁT</div>
       <div className="quick-menu-mode-row">
         <button type="button" role="menuitem" aria-label="Bản đồ địa hình"
           aria-current={mode === 'natural' ? 'true' : undefined}
-          className={mode === 'natural' ? 'is-active' : ''} onClick={() => onAction('natural')}>◒ <span>Địa hình</span></button>
+          className={mode === 'natural' ? 'is-active' : ''} onClick={() => onAction('natural')}><GameGlyph name="terrain" /><span>Địa hình</span></button>
         <button type="button" role="menuitem" aria-label="Bản đồ chủ quyền"
           aria-current={mode === 'political' ? 'true' : undefined}
-          className={mode === 'political' ? 'is-active' : ''} onClick={() => onAction('political')}>◇ <span>Chủ quyền</span></button>
+          className={mode === 'political' ? 'is-active' : ''} onClick={() => onAction('political')}><GameGlyph name="political" /><span>Chủ quyền</span></button>
         <button type="button" role="menuitem" aria-label="Bản đồ tài nguyên"
           aria-current={mode === 'resources' ? 'true' : undefined}
-          className={mode === 'resources' ? 'is-active' : ''} onClick={() => onAction('resources')}>✥ <span>Tài nguyên</span></button>
+          className={mode === 'resources' ? 'is-active' : ''} onClick={() => onAction('resources')}><GameGlyph name="food" /><span>Tài nguyên</span></button>
       </div>
       {menu.territory && <>
         <div className="quick-menu-section">LỆNH VƯƠNG QUỐC <span>PHASE 3–4</span></div>
-        <Action symbol="▥" label="Xây dựng / nâng cấp" disabled/>
-        <Action symbol="⚔" label="Tuyển quân / điều quân" disabled/>
+        <Action icon="build" label="Xây dựng / nâng cấp" disabled/>
+        <Action icon="infantry" label="Tuyển quân / điều quân" disabled/>
       </>}
       <div className="quick-menu-foot">Nhấn Esc hoặc nhấp ra ngoài để đóng</div>
     </div>

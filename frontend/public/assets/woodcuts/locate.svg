@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Định vị · La bàn</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="64" cy="64" r="47" fill="#E8D6AA" stroke="#7A6444" stroke-width="4"/>
+<circle cx="64" cy="64" r="38" stroke="#AE8752" stroke-width="2" stroke-dasharray="3 5"/>
+<path d="M64 6L77 51L122 64L77 77L64 122L51 77L6 64L51 51Z" fill="url(#brass)"/>
+<path d="M64 6L64 64L51 51Z M64 64L122 64L77 77Z M64 122L64 64L77 77Z M6 64L64 64L51 51Z" fill="url(#red)"/>
+<circle cx="64" cy="64" r="8" fill="#405D53" stroke="#E7D39B" stroke-width="2"/>
+</g></svg>

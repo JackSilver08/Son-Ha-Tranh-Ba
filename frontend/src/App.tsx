@@ -2,16 +2,18 @@ import { useEffect, useRef, useState } from 'react';
 import { MapCanvas, type CameraCommand, type CameraEvent, type MapContextRequest } from './components/MapCanvas';
 import { MapContextMenu, type QuickAction, type QuickMenuState } from './components/MapContextMenu';
 import { useFoundation } from './hooks/useFoundation';
+import { GameGlyph, type WoodcutName } from './components/GameGlyph';
 import { positionQuickMenu } from './map/quickMenu';
 import { TERRITORIES, type MapMode, type Point2D, type Territory } from './map/territories';
 import './map/map-phase2.css';
 import './map/quick-menu.css';
 import './map/symbolic-ui.css';
+import './map/woodcut-ui.css';
 
-const modeOptions: { id: MapMode; symbol: string; title: string }[] = [
-  { id: 'natural', symbol: '◈', title: 'Địa hình' },
-  { id: 'political', symbol: '⚑', title: 'Chủ quyền' },
-  { id: 'resources', symbol: '✥', title: 'Tài nguyên' },
+const modeOptions: { id: MapMode; icon: WoodcutName; title: string }[] = [
+  { id: 'natural', icon: 'terrain', title: 'Địa hình' },
+  { id: 'political', icon: 'political', title: 'Chủ quyền' },
+  { id: 'resources', icon: 'food', title: 'Tài nguyên' },
 ];
 const factions = { west: 'Tây quốc', east: 'Đông quốc', neutral: 'Trung lập' };
 
@@ -25,6 +27,7 @@ export default function App() {
   const [marker, setMarker] = useState<Point2D | null>(null);
   const [menu, setMenu] = useState<QuickMenuState | null>(null);
   const [showProvinces, setShowProvinces] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
 
   const camera = (command: CameraCommand, target?: Point2D) =>
@@ -41,6 +44,7 @@ export default function App() {
     setSelected(request.territory);
     setHovered(null);
     setShowProvinces(false);
+    setShowLegend(false);
     setMenu({ ...point, territory: request.territory, worldPoint: request.worldPoint });
   };
 
@@ -55,6 +59,7 @@ export default function App() {
     setMenu({ ...position, territory: selected,
       worldPoint: selected?.center ?? { x: 600, y: 360 } });
     setShowProvinces(false);
+    setShowLegend(false);
   };
 
   const onAction = (action: QuickAction) => {
@@ -99,7 +104,7 @@ export default function App() {
         <div className="game-vignette" aria-hidden="true" />
         <header className="game-hud-top">
           <div className="game-title">
-            <span className="game-seal" aria-hidden="true">山</span>
+            <span className="game-seal"><GameGlyph name="lord" /></span>
             <div><span className="game-kicker">SA BÀN QUÂN CƠ · 2D</span><h1>Sơn Hà Tranh Bá</h1></div>
           </div>
           <div className="game-phase"><span className="game-phase-dot" /> GIAI ĐOẠN 2 · 6 VÙNG</div>
@@ -116,7 +121,7 @@ export default function App() {
         </header>
 
         <div className="map-hover-label" aria-live="off">
-          <span className="map-hover-flourish" aria-hidden="true">✦</span>
+          <GameGlyph name="map" className="map-hover-flourish" />
           {hovered && !menu ? <><strong>{hovered.name}</strong><span>{factions[hovered.faction]} · {hovered.resource}</span></>
             : <><strong>Bản đồ quân cơ</strong><span>Nhấp trái chọn vùng · Nhấp phải mở quân lệnh</span></>}
         </div>
@@ -124,16 +129,23 @@ export default function App() {
         <div className="game-side-tools" role="group" aria-label="Điều khiển bản đồ">
           <button type="button" onClick={() => camera('zoom-in')} aria-label="Phóng to" title="Phóng to">＋</button>
           <button type="button" onClick={() => camera('zoom-out')} aria-label="Thu nhỏ" title="Thu nhỏ">−</button>
-          <button type="button" onClick={() => camera('reset')} aria-label="Về toàn bản đồ" title="Về toàn bản đồ">⌂</button>
+          <button type="button" onClick={() => camera('reset')} aria-label="Về toàn bản đồ" title="Về toàn bản đồ"><GameGlyph name="locate" /></button>
           <span className="game-zoom" aria-live="off">{Math.round(zoom * 100)}%</span>
         </div>
 
-        <div className="map-compass" aria-hidden="true"><span>BẮC</span><strong>✥</strong></div>
+        <div className="map-compass" aria-hidden="true"><span>BẮC</span><GameGlyph name="locate" /></div>
+
+        <button type="button" className={'game-legend-toggle' + (showLegend ? ' is-open' : '')}
+          onClick={() => { setShowLegend(v => !v); setShowProvinces(false); setMenu(null); }}
+          aria-expanded={showLegend} aria-controls="game-symbol-legend">
+          <GameGlyph name="infantry" />
+          <span>Chú giải quân cơ</span>
+        </button>
 
         <div className="game-hud-bottom">
           <button className={'game-province-toggle' + (showProvinces ? ' is-current' : '')} type="button"
-            onClick={() => { setShowProvinces(current => !current); setMenu(null); }} aria-expanded={showProvinces}>
-            <span className="hud-glyph" aria-hidden="true">▤</span>
+            onClick={() => { setShowProvinces(current => !current); setShowLegend(false); setMenu(null); }} aria-expanded={showProvinces}>
+            <span className="hud-glyph"><GameGlyph name="map" /></span>
             <span>Địa chí <small>6 trấn phủ</small></span>
           </button>
           <nav className="game-mode-tabs" aria-label="Các lớp bản đồ">
@@ -141,7 +153,7 @@ export default function App() {
               <button type="button" key={option.id} aria-pressed={mapMode === option.id}
                 className={'game-mode-tab' + (mapMode === option.id ? ' is-current' : '')}
                 onClick={() => { setMapMode(option.id); setMenu(null); }}>
-                <span className="hud-glyph" aria-hidden="true">{option.symbol}</span><span>{option.title}</span>
+                <span className="hud-glyph"><GameGlyph name={option.icon} /></span><span>{option.title}</span>
               </button>
             ))}
           </nav>
@@ -149,13 +161,49 @@ export default function App() {
             aria-label="Mở menu quân lệnh nhanh"><span>CHUỘT PHẢI / LỆNH</span><strong>Quân lệnh nhanh</strong></button>
         </div>
 
+        {showLegend && (
+          <aside className="game-symbol-legend" id="game-symbol-legend" aria-label="Chú giải ký hiệu của game">
+            <div className="game-drawer-heading">
+              <span>QUÂN CƠ · MỘC BẢN</span>
+              <button type="button" onClick={() => setShowLegend(false)} aria-label="Đóng chú giải">×</button>
+            </div>
+            <p>Chữ nghĩa tối thiểu, đọc thế trận bằng hình. Những binh chủng dưới đây là ký hiệu chuẩn bị cho Phase 3–4.</p>
+            <h3>BINH CHỦNG</h3>
+            <div className="game-symbol-grid">
+              {([
+                ['infantry', 'Bộ binh'], ['archer', 'Cung thủ'],
+                ['cavalry', 'Kỵ sĩ'], ['militia', 'Dân quân'],
+              ] as const).map(([icon, title]) => (
+                <div className="game-legend-cell" key={icon}><GameGlyph name={icon} /><span>{title}</span></div>
+              ))}
+            </div>
+            <h3>TÀI NGUYÊN</h3>
+            <div className="game-symbol-grid">
+              {([
+                ['food', 'Lương thực'], ['timber', 'Gỗ'],
+                ['ore', 'Khoáng sản'], ['stone', 'Đá'], ['gold', 'Vàng'],
+              ] as const).map(([icon, title]) => (
+                <div className="game-legend-cell" key={icon}><GameGlyph name={icon} /><span>{title}</span></div>
+              ))}
+            </div>
+            <h3>HÀNH CHÍNH</h3>
+            <div className="game-symbol-grid">
+              {([
+                ['capital', 'Kinh đô'], ['province', 'Trấn'],
+                ['lord', 'Lãnh chúa'], ['flag', 'Quân kỳ'],
+              ] as const).map(([icon, title]) => (
+                <div className="game-legend-cell" key={icon}><GameGlyph name={icon} /><span>{title}</span></div>
+              ))}
+            </div>
+          </aside>
+        )}
         {showProvinces && (
           <aside className="game-province-list" aria-label="Danh sách trấn phủ">
             <div className="game-drawer-heading"><span>ĐỊA CHÍ LỤC TRẤN</span><button onClick={() => setShowProvinces(false)} type="button" aria-label="Đóng danh sách">×</button></div>
             {TERRITORIES.map(territory =>
               <button type="button" key={territory.id} className={'game-province-entry' + (selected?.id === territory.id ? ' is-selected' : '')}
                 onClick={() => { setSelected(territory); setShowProvinces(false); camera('focus', territory.center); }}>
-                <span className={'province-emblem province-emblem--' + territory.faction} aria-hidden="true">{territory.kind === 'Kinh đô' ? '▣' : '⌂'}</span>
+                <span className={'province-emblem province-emblem--' + territory.faction}><GameGlyph name={territory.kind === 'Kinh đô' ? 'capital' : 'province'} /></span>
                 <span><strong>{territory.name}</strong><small>{territory.kind} · {territory.resource}</small></span>
               </button>
             )}
@@ -169,17 +217,17 @@ export default function App() {
               <button type="button" aria-label="Đóng địa chí" onClick={() => setSelected(null)}>×</button>
             </div>
             <div className="game-detail-herald">
-              <span className={'province-emblem province-emblem--' + selected.faction} aria-hidden="true">{selected.kind === 'Kinh đô' ? '▣' : '⌂'}</span>
+              <span className={'province-emblem province-emblem--' + selected.faction}><GameGlyph name={selected.kind === 'Kinh đô' ? 'capital' : 'province'} /></span>
               <div><h2>{selected.name}</h2><span>{factions[selected.faction]}</span></div>
             </div>
             <div className="game-province-fields">
-              <div><span>◈ Loại vùng</span><strong>{selected.kind}</strong></div>
-              <div><span>✥ Tài nguyên</span><strong>{selected.resource}</strong></div>
-              <div><span>♜ Lãnh chúa</span><strong>Chưa triển khai</strong></div>
-              <div><span>⚑ Quân đồn trú</span><strong>Chưa triển khai</strong></div>
+              <div><span className="game-stat-label"><GameGlyph name="province" /> Loại vùng</span><strong>{selected.kind}</strong></div>
+              <div><span className="game-stat-label"><GameGlyph name={selected.resource === 'Gỗ' ? 'timber' : selected.resource === 'Lương thực' ? 'food' : selected.resource === 'Đá' ? 'stone' : selected.resource === 'Vàng' ? 'gold' : 'ore'} /> Tài nguyên</span><strong>{selected.resource}</strong></div>
+              <div><span className="game-stat-label"><GameGlyph name="lord" /> Lãnh chúa</span><strong>Chưa triển khai</strong></div>
+              <div><span className="game-stat-label"><GameGlyph name="infantry" /> Quân đồn trú</span><strong>Chưa triển khai</strong></div>
             </div>
             <p>Chủ quyền và tài nguyên đang là dữ liệu mẫu. Kinh tế, quân đội, lãnh chúa sẽ kết nối C# ở các giai đoạn tiếp theo.</p>
-            <button type="button" className="game-locate" onClick={() => camera('focus', selected.center)}>⌖ Định vị vùng</button>
+            <button type="button" className="game-locate" onClick={() => camera('focus', selected.center)}><GameGlyph name="locate" /> Định vị vùng</button>
           </aside>
         )}
 

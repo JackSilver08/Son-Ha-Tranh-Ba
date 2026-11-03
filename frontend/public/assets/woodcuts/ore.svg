@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Khoáng sản · Quặng</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M19 94L31 49L57 35L68 93L48 110Z" fill="#75817A"/>
+<path d="M31 49L57 35L45 79L19 94Z" fill="#C7BA9D"/>
+<path d="M57 35L68 93L45 79Z" fill="#59676C"/>
+<path d="M48 104L63 32L91 17L109 91L87 111Z" fill="#938E84"/>
+<path d="M63 32L91 17L83 70L48 104Z" fill="#D6D0B8"/>
+<path d="M91 17L109 91L83 70Z" fill="#6B7880"/>
+<path d="M77 62L91 37L99 73L89 91Z" fill="#B2A3B7" stroke="#755D78" stroke-width="2"/>
+<path d="M11 109Q63 114 116 107" stroke="#74654D" stroke-width="3"/>
+</g></svg>

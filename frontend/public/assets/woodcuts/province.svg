@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Trấn · Đình làng mộc bản</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M18 99Q65 92 111 100L111 108Q64 116 17 106Z" fill="#796F52" stroke-width="2"/>
+<path d="M25 64L102 64L102 99L25 98Z" fill="url(#paper)"/>
+<path d="M21 58Q32 55 37 47Q53 58 64 47Q76 59 91 45Q98 54 110 56L105 65Q66 58 20 67Z" fill="url(#red)"/>
+<path d="M25 57L48 37Q59 34 64 29Q77 37 81 37L103 57Z" fill="#C49D60"/>
+<path d="M12 62Q35 60 41 52L64 37L86 51Q96 61 116 61L110 69Q95 69 82 61Q64 54 46 61Q30 69 16 69Z" fill="url(#green)"/>
+<path d="M27 72V95M101 72V95" stroke="#67533E" stroke-width="4"/>
+<path d="M41 72V96M87 72V96" stroke="#917145" stroke-width="2.6"/>
+<path d="M54 96V81Q64 74 74 82V97Z" fill="#4A4032"/>
+<path d="M64 80V98" stroke="#C59C63" stroke-width="1.7"/>
+<path d="M25 84H40M88 85H103" stroke="#AE915F" stroke-width="1.7"/>
+<path d="M49 55L64 48L79 55" stroke="#ECD5A1" stroke-width="2"/>
+<circle cx="64" cy="57" r="3.5" fill="#C8934A" stroke="#473B30" stroke-width="1.5"/>
+<path d="M107 54L109 32M109 33L120 37L109 43Z" fill="url(#red)" stroke-width="2"/>
+</g></svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Vàng · Tiền đồng</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="72" cy="73" rx="35" ry="32" fill="#B48245"/>
+<ellipse cx="70" cy="68" rx="35" ry="32" fill="url(#brass)"/>
+<path d="M52 54L86 54L86 82L52 82Z" fill="#6C6146" stroke="#DCC078" stroke-width="2"/>
+<path d="M56 58L82 58L82 78L56 78Z" fill="#6D6043" stroke="#EBD393" stroke-width="1.6"/>
+<path d="M38 84Q25 91 28 111Q63 129 98 108" fill="none" stroke="#A66B38" stroke-width="9"/>
+<path d="M40 45Q70 23 99 47" stroke="#FAE0A0" stroke-width="3"/>
+<circle cx="70" cy="68" r="39" stroke="#6C512F" stroke-width="2"/>
+<path d="M17 48L26 31M104 25L111 11M100 112L114 117" stroke="#A8753E" stroke-width="3"/>
+</g></svg>

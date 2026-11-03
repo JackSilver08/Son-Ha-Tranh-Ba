@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Dân quân · Tre và nón</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M25 107L101 16" stroke="#766047" stroke-width="7"/>
+<path d="M101 15L112 31L94 28Z" fill="#B6B6A2"/>
+<path d="M20 102L26 93L37 96L33 110Z" fill="#B26B48"/>
+<path d="M34 42Q60 13 91 43Q63 56 34 42Z" fill="#C6A568"/>
+<path d="M35 46Q63 50 93 46Q64 62 35 49Z" fill="url(#brass)"/>
+<path d="M63 46L63 59" stroke="#7F6944" stroke-width="2"/>
+<path d="M49 65Q64 52 80 65L85 91Q64 100 45 91Z" fill="url(#green)"/>
+<path d="M48 78L81 78M63 65V98" stroke="#E7D3A1" stroke-width="2"/>
+<path d="M48 95L44 111M81 95L89 110" stroke="#66523E" stroke-width="6"/>
+</g></svg>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js';
+import { Application, Assets, Container, Graphics, Sprite, Text, type Texture } from 'pixi.js';
 import { MAP_HEIGHT, MAP_WIDTH, TERRITORIES, territoryAt, type MapMode, type Point2D, type Territory } from '../map/territories';
 
 export type CameraCommand = 'reset' | 'zoom-in' | 'zoom-out' | 'focus';
@@ -20,6 +20,7 @@ type Scene = {
   world: Container;
   overlays: Graphics[];
   markerGraphic: Graphics;
+  resourceBadges: Container[];
   viewWidth: number;
   viewHeight: number;
   fit: number;
@@ -54,6 +55,7 @@ function zoomAt(scene: Scene, factor: number, x: number, y: number) {
 
 function repaint(scene: Scene, mode: MapMode, selectedId: string | null) {
   TERRITORIES.forEach((territory, index) => {
+    scene.resourceBadges[index].visible = mode === 'resources' || territory.id === selectedId || territory.id === scene.hoveredId;
     const selected = territory.id === selectedId;
     const hovered = territory.id === scene.hoveredId;
     const overview = mode !== 'natural';
@@ -73,45 +75,75 @@ function repaint(scene: Scene, mode: MapMode, selectedId: string | null) {
   });
 }
 
-/** Original vector crests for each province, independent of the map artwork. */
-function addRegionSymbol(world: Container, territory: Territory) {
-  const badge = new Container();
-  badge.position.set(territory.center.x, territory.center.y);
-  const factionColor = territory.faction === 'west' ? 0x567d65 : 0x9d5641;
-  const plate = new Graphics();
-  plate.ellipse(0, 12, 45, 14).fill({ color: 0x364733, alpha: .18 });
-  plate.roundRect(-39, -42, 78, 78, 5).fill({ color: 0xead8b0, alpha: .98 })
-    .stroke({ color: 0x3f3d2a, width: 2.6 });
-  plate.roundRect(-34, -37, 68, 68, 3).stroke({ color: factionColor, width: 2, alpha: .88 });
-  plate.poly([{x:0,y:-48},{x:39,y:-28},{x:32,y:26},{x:0,y:43},{x:-32,y:26},{x:-39,y:-28}],true)
-    .stroke({ color: factionColor, width: 1.8, alpha: .5 });
-  if (territory.kind === 'Kinh đô') {
-    plate.rect(-22,-3,44,25).fill({color:0x716c56}).stroke({color:0x493f2f,width:1.5});
-    for(const x of [-19,0,19]) {
-      plate.rect(x-7,-18,14,35).fill({color:0xb6a47b}).stroke({color:0x584a33,width:1});
-      plate.poly([{x:x-10,y:-18},{x,y:-32},{x:x+10,y:-18}],true).fill({color:factionColor});
-    }
-    plate.roundRect(-8,9,16,13,5).fill({color:0x3d3c31});
-    plate.moveTo(18,-28).lineTo(18,-46).stroke({color:0x484533,width:1.4});
-    plate.poly([{x:18,y:-45},{x:42,y:-39},{x:18,y:-32}],true).fill({color:factionColor});
-  } else {
-    plate.rect(-20,-4,40,27).fill({color:0xc6ac7e}).stroke({color:0x66523c,width:1.7});
-    plate.poly([{x:-28,y:-4},{x:0,y:-32},{x:28,y:-4}],true).fill({color:factionColor})
-      .stroke({color:0x563f32,width:1.5});
-    plate.rect(-6,9,12,14).fill({color:0x4e4634});
-    plate.rect(12,3,5,7).fill({color:0xe7d6ae});
+/** Hand-illustrated woodcut art, on cartographic faction seals rather than UI cards. */
+function addRegionSymbol(world: Container, territory: Territory, texture: Texture, resourceTexture: Texture): Container {
+  const token = new Container();
+  token.position.set(territory.center.x, territory.center.y);
+  const west = territory.faction === 'west';
+  const side = west ? 0x4c705c : 0x9c4d3c;
+  const pale = 0xeed8aa;
+  const dark = 0x3d3228;
+  const seal = new Graphics();
+
+  // A copper-edged seal, hand-engraved with repeated Dong Son inspired ticks.
+  seal.ellipse(0, 22, 48, 16).fill({color: 0x262c24, alpha: .24});
+  seal.poly([{x:-48,y:-26},{x:-35,y:-54},{x:0,y:-63},{x:35,y:-54},{x:48,y:-26},{x:43,y:20},{x:0,y:49},{x:-43,y:20}],true)
+    .fill({color: dark, alpha:.96}).stroke({color:0xe4bd7c,width:3});
+  seal.poly([{x:-41,y:-24},{x:-30,y:-47},{x:0,y:-55},{x:30,y:-47},{x:41,y:-24},{x:36,y:16},{x:0,y:40},{x:-36,y:16}],true)
+    .fill({color: pale}).stroke({color:0x997349,width:1.8});
+  seal.circle(0,-7,35).fill({color:0xd9be91}).stroke({color:side,width:3.5});
+  seal.circle(0,-7,30).stroke({color:0x73533e,width:1.4,alpha:.8});
+  for (let angle = 0; angle < Math.PI*2; angle+=Math.PI/8) {
+    const x=Math.cos(angle),y=Math.sin(angle);
+    seal.moveTo(x*31,y*31-7).lineTo(x*34,y*34-7)
+      .stroke({color:side,width:1.6,alpha:.72});
   }
-  badge.addChild(plate);
-  const label = new Text({text:territory.name.toUpperCase(), style:{
-    fontFamily:'Georgia, serif',fontSize:14,fontWeight:'bold',letterSpacing:1.1,fill:0xf3e5be
+  // Territorial pennant speaks ownership at a glance, without altering the icon.
+  seal.moveTo(38,-31).lineTo(67,-43).lineTo(65,-12).lineTo(38,-18).closePath()
+    .fill({color:side}).stroke({color:dark,width:2});
+  seal.moveTo(42,-26).lineTo(62,-36).stroke({color:0xf2d7a9,width:1.8});
+  seal.circle(0,-58,3).fill({color:0xdabb78});
+  token.addChild(seal);
+
+  const art = new Sprite(texture);
+  art.anchor.set(.5);
+  art.position.set(0,-9);
+  art.width = territory.kind === 'Kinh đô' ? 73 : 77;
+  art.height = territory.kind === 'Kinh đô' ? 73 : 77;
+  token.addChild(art);
+
+  const label = new Text({text:territory.name.toUpperCase(),style:{
+    fontFamily:'Georgia, serif',fontSize:13.8,fontWeight:'bold',letterSpacing:1.35,
+    fill:0xf7e5bd,stroke:{color:0x1c2920,width:2}
   }});
-  label.anchor.set(.5, .5);
-  label.position.set(0,63);
-  const scroll = new Graphics();
-  scroll.roundRect(-(label.width+30)/2,47,label.width+30,31,3)
-    .fill({color:0x25382e,alpha:.92}).stroke({color:factionColor,width:2});
-  badge.addChild(scroll,label);
-  world.addChild(badge);
+  label.anchor.set(.5);
+  label.position.set(0,69);
+  const labelBg = new Graphics();
+  const labelWidth = label.width + 32;
+  labelBg.moveTo(-labelWidth/2+7,50).lineTo(labelWidth/2-7,50)
+    .lineTo(labelWidth/2,65).lineTo(labelWidth/2-7,84)
+    .lineTo(-labelWidth/2+7,84).lineTo(-labelWidth/2,65).closePath()
+    .fill({color:0x25362c,alpha:.95})
+    .stroke({color:0xb59460,width:1.8});
+  for(const x of [-labelWidth/2+11,labelWidth/2-11]) {
+    labelBg.circle(x,67,2).fill({color:0xe5bb79});
+  }
+  token.addChild(labelBg,label);
+
+  // Economy icon is a separate semantic marker, shown only when relevant.
+  const resourceBadge = new Container();
+  resourceBadge.position.set(46,35);
+  const round = new Graphics();
+  round.circle(0,0,19).fill({color:0xead6aa,alpha:.98}).stroke({color:0x514331,width:2.4});
+  round.circle(0,0,15).stroke({color:0xb79254,width:1.2});
+  const resourceIcon = new Sprite(resourceTexture);
+  resourceIcon.anchor.set(.5);
+  resourceIcon.width=32;
+  resourceIcon.height=32;
+  resourceBadge.addChild(round,resourceIcon);
+  token.addChild(resourceBadge);
+  world.addChild(token);
+  return resourceBadge;
 }
 
 function repaintMarker(scene: Scene, point: Point2D | null) {
@@ -186,8 +218,18 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, marker, onContextR
       if (cancelled) { next.destroy(true); return; }
       app = next;
       host.appendChild(next.canvas);
-      const texture = await Assets.load('/assets/son-ha-world.svg');
+      const textures = await Promise.all([
+        Assets.load('/assets/son-ha-world.svg'),
+        Assets.load('/assets/woodcuts/capital.svg'),
+        Assets.load('/assets/woodcuts/province.svg'),
+        Assets.load('/assets/woodcuts/food.svg'),
+        Assets.load('/assets/woodcuts/timber.svg'),
+        Assets.load('/assets/woodcuts/ore.svg'),
+        Assets.load('/assets/woodcuts/stone.svg'),
+        Assets.load('/assets/woodcuts/gold.svg'),
+      ]) as Texture[];
       if (cancelled) return;
+      const [texture, capitalTexture, provinceTexture, foodTexture, timberTexture, oreTexture, stoneTexture, goldTexture] = textures;
       const world = new Container();
       const background = new Sprite(texture);
       background.width = MAP_WIDTH;
@@ -198,12 +240,20 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, marker, onContextR
         world.addChild(graphic);
         return graphic;
       });
-      for (const territory of TERRITORIES) addRegionSymbol(world, territory);
+      const resourceTextures: Record<Territory['resource'], Texture> = {
+        'Lương thực': foodTexture, 'Gỗ': timberTexture, 'Đá': stoneTexture,
+        'Khoáng sản': oreTexture, 'Vàng': goldTexture,
+      };
+      const resourceBadges = TERRITORIES.map(territory =>
+        addRegionSymbol(world, territory,
+          territory.kind === 'Kinh đô' ? capitalTexture : provinceTexture,
+          resourceTextures[territory.resource])
+      );
       const markerGraphic = new Graphics();
       world.addChild(markerGraphic);
       next.stage.addChild(world);
       const scene: Scene = {
-        app: next, world, overlays, markerGraphic,
+        app: next, world, overlays, markerGraphic, resourceBadges,
         viewWidth: host.clientWidth, viewHeight: host.clientHeight,
         fit: 1, zoom: 1, hoveredId: null,
       };

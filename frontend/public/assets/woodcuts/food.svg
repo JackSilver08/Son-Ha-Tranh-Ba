@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Lương thực · Bó lúa</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M64 113Q69 62 64 19" stroke="#6C7249" stroke-width="5"/>
+<path d="M59 103Q42 68 21 39M71 104Q88 69 105 38" stroke="#5B6A42" stroke-width="4"/>
+<path d="M21 37Q14 17 30 13Q40 29 21 37ZM105 37Q97 12 110 14Q121 29 105 37Z" fill="url(#brass)"/>
+<path d="M52 33Q37 20 32 33Q37 47 52 33Z" fill="#C5A653" stroke-width="1.6"/><path d="M49 45Q33 30 28 45Q33 59 49 45Z" fill="#C5A653" stroke-width="1.6"/><path d="M46 57Q29 40 24 57Q29 71 46 57Z" fill="#C5A653" stroke-width="1.6"/><path d="M43 69Q25 50 20 69Q25 83 43 69Z" fill="#C5A653" stroke-width="1.6"/><path d="M40 81Q21 60 16 81Q21 95 40 81Z" fill="#C5A653" stroke-width="1.6"/>
+<path d="M76 33Q89 20 96 33Q89 47 76 33Z" fill="#D1B56D" stroke-width="1.6"/><path d="M79 45Q93 30 100 45Q93 59 79 45Z" fill="#D1B56D" stroke-width="1.6"/><path d="M82 57Q97 40 104 57Q97 71 82 57Z" fill="#D1B56D" stroke-width="1.6"/><path d="M85 69Q101 50 108 69Q101 83 85 69Z" fill="#D1B56D" stroke-width="1.6"/><path d="M88 81Q105 60 112 81Q105 95 88 81Z" fill="#D1B56D" stroke-width="1.6"/>
+<path d="M45 95Q63 105 83 95L80 106Q64 111 48 107Z" fill="url(#red)"/>
+</g></svg>

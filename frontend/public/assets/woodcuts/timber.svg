@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Gỗ · Khúc gỗ</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M20 77L80 35L106 51L45 94Z" fill="url(#brass)"/>
+<path d="M23 76Q20 90 44 95L49 79Q43 66 31 66Z" fill="#BA9C6D"/>
+<ellipse cx="38" cy="82" rx="15" ry="12" transform="rotate(-35 38 82)" fill="#E2CFA4"/>
+<ellipse cx="38" cy="82" rx="9" ry="7" transform="rotate(-35 38 82)" stroke="#8A7052" stroke-width="2"/>
+<path d="M26 100L83 60L109 76L49 113Z" fill="#AA7954"/>
+<ellipse cx="37" cy="103" rx="13" ry="10" transform="rotate(-34 37 103)" fill="#E6C995"/>
+<ellipse cx="37" cy="103" rx="7.5" ry="5.5" transform="rotate(-34 37 103)" stroke="#8B6549" stroke-width="2"/>
+<path d="M72 28Q78 8 95 16Q102 29 91 39L72 38Z" fill="url(#green)"/>
+<path d="M85 19L81 37" stroke="#E6D7A9" stroke-width="1.6"/>
+</g></svg>

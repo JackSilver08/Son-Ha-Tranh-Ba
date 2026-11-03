@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Dấu chỉ huy · Quân kỳ</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M28 113L34 13" stroke="#5B4E3D" stroke-width="7"/>
+<path d="M35 19Q65 5 107 23L95 64Q67 50 33 66Z" fill="url(#red)"/>
+<path d="M35 25Q70 14 101 30M39 59Q67 42 94 57" stroke="#E8BE84" stroke-width="2.3"/>
+<path d="M63 28L74 35L70 47L58 47L54 36Z" fill="url(#brass)" stroke-width="2"/>
+<path d="M13 113H51" stroke="#7B6246" stroke-width="5"/>
+<circle cx="35" cy="10" r="6" fill="#CBA56E"/>
+</g></svg>

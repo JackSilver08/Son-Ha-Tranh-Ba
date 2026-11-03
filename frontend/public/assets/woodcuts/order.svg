@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+<defs>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F5E6C4"/><stop offset="1" stop-color="#D0B886"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B96647"/><stop offset="1" stop-color="#843D35"/></linearGradient>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7F906A"/><stop offset="1" stop-color="#425E50"/></linearGradient>
+<linearGradient id="brass" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#F0CA7B"/><stop offset="1" stop-color="#9E7445"/></linearGradient>
+</defs>
+<title>Quân lệnh · Chiếu chỉ</title>
+<g stroke="#3B332C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M27 25Q36 15 47 24L103 24V88L44 88Q36 79 27 90Z" fill="url(#paper)"/>
+<path d="M25 24Q37 16 40 29V97Q31 84 25 96Z" fill="#B58B5E"/>
+<path d="M42 29H103M43 84H101" stroke="#977B55" stroke-width="2"/>
+<path d="M51 41L89 41M51 51L93 51M51 61L81 61" stroke="#8B7253" stroke-width="3"/>
+<path d="M73 71Q84 63 94 70L95 93Q84 106 73 93Z" fill="url(#red)" stroke="#803D34" stroke-width="2"/>
+<path d="M79 82L84 76L90 82L84 89Z" fill="#E2C58A" stroke-width="1"/>
+<path d="M107 24Q114 27 107 40M107 85Q115 86 108 95" stroke="#5B4934" stroke-width="4"/>
+</g></svg>

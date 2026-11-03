@@ -1,3 +1,11 @@
+# Bản cập nhật mỹ thuật Phase 2.2 — Ký hiệu mộc bản
+
+19 ký hiệu SVG **được vẽ riêng**, thay cho icon Unicode và biểu tượng hình học thô. Trên sa bàn: hai loại huy hiệu kinh đô/trấn, đánh dấu phe bằng quân kỳ và hiển thị tài nguyên bằng ký hiệu riêng khi cần. Trong React: đồng nhất ký hiệu của thanh lệnh, địa chí và menu chuột phải. Nút **Chú giải quân cơ** mở bộ mẫu bộ binh, cung thủ, kỵ sĩ, dân quân và tài nguyên; các binh chủng mới chỉ là minh họa cho Phase 3–4.
+
+Asset có thể chỉnh trực tiếp trong Inkscape hoặc Illustrator: `frontend/public/assets/woodcuts/*.svg`. Khởi chạy `docker compose up --build -d`; kiểm thử frontend `npm run test:icons` và `npm run build`.
+
+---
+
 # Sơn Hà Tranh Bá — Phase 2.1: Sa bàn ký hiệu và quân lệnh nhanh
 
 - Giao diện mới: **2D Symbol-Based Strategy Map** chiếm toàn màn hình, bỏ sidebar cố định.

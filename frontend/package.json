@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test:map": "node --experimental-strip-types --test scripts/territories.test.mjs",
-    "test:quick-menu": "node --experimental-strip-types --test scripts/quick-menu.test.mjs"
+    "test:quick-menu": "node --experimental-strip-types --test scripts/quick-menu.test.mjs",
+    "test:icons": "node --test scripts/woodcut-icons.test.mjs"
   },
   "dependencies": {
     "@microsoft/signalr": "10.0.0",

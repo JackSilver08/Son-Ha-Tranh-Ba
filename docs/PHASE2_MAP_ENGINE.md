@@ -19,3 +19,13 @@
 - Recruiting, construction and army orders are **disabled placeholders** until server-authoritative gameplay is introduced in Phase 3–4.
 - Geometry and quick-menu placement smoke tests: `cd frontend && npm run test:map && npm run test:quick-menu`.
 - No modifications to ASP.NET Core, SignalR, PostgreSQL, Docker Compose or its volumes. Full frontend build and end-to-end Docker run must be verified locally.
+
+## Phase 2.2 — Custom woodblock insignia (replaces placeholder Unicode and geometries)
+
+- 19 individually authored SVG assets in `frontend/public/assets/woodcuts/` (128×128 artboards), including Vietnamese-inspired capital gate, communal house, four troop types, five resources and cartographic commands.
+- Shared `GameGlyph` component for React HUD, legend, territory reports and quick-order menu.
+- PixiJS loads the **same** capital/province SVG textures into reusable world-space sprites, framed by faction pennants; no screen-space symbol positional drift during pan/zoom.
+- Resource markers are shown only on the economic overlay or while selecting/hovering a province.
+- Optional icon legend can be opened in battle for unit, resource and administrative symbols; visual-only assets for future army systems are not operational gameplay.
+- No changes to C# simulation, API, DB, SignalR, Docker or 6-province polygon geometry. No random/new faction data.
+- Run `cd frontend && npm run test:map && npm run test:quick-menu && npm run test:icons && npm run build`. Frontend build and Docker integration need checking locally.
