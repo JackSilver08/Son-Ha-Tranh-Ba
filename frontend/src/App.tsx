@@ -1,17 +1,19 @@
-import { useState } from 'react';
-import './map/map-phase2.css';
-import { MapCanvas, type CameraCommand, type CameraEvent } from './components/MapCanvas';
+import { useEffect, useRef, useState } from 'react';
+import { MapCanvas, type CameraCommand, type CameraEvent, type MapContextRequest } from './components/MapCanvas';
+import { MapContextMenu, type QuickAction, type QuickMenuState } from './components/MapContextMenu';
 import { useFoundation } from './hooks/useFoundation';
-import { TERRITORIES, type MapMode, type Territory } from './map/territories';
+import { positionQuickMenu } from './map/quickMenu';
+import { TERRITORIES, type MapMode, type Point2D, type Territory } from './map/territories';
+import './map/map-phase2.css';
+import './map/quick-menu.css';
+import './map/symbolic-ui.css';
 
-type ConnectionStatus = 'connecting' | 'online' | 'offline';
-const modeLabels: Record<MapMode, string> = { natural: 'Địa hình', political: 'Chủ quyền', resources: 'Tài nguyên' };
-const factionLabels = { west: 'Tây quốc', east: 'Đông quốc', neutral: 'Trung lập' };
-
-function StatusItem({ label, status }: { label: string; status: ConnectionStatus }) {
-  const text = status === 'online' ? 'Hoạt động' : status === 'offline' ? 'Mất kết nối' : 'Đang kết nối';
-  return <div className="service-row"><span className="service-name">{label}</span><span className="service-value"><span className={`status-dot status-dot--${status}`} />{text}</span></div>;
-}
+const modeOptions: { id: MapMode; symbol: string; title: string }[] = [
+  { id: 'natural', symbol: '◈', title: 'Địa hình' },
+  { id: 'political', symbol: '⚑', title: 'Chủ quyền' },
+  { id: 'resources', symbol: '✥', title: 'Tài nguyên' },
+];
+const factions = { west: 'Tây quốc', east: 'Đông quốc', neutral: 'Trung lập' };
 
 export default function App() {
   const foundation = useFoundation();
@@ -20,90 +22,173 @@ export default function App() {
   const [mapMode, setMapMode] = useState<MapMode>('natural');
   const [cameraEvent, setCameraEvent] = useState<CameraEvent>({ sequence: 0, command: 'reset' });
   const [zoom, setZoom] = useState(1);
-  const camera = (command: CameraCommand) => setCameraEvent(previous => ({ sequence: previous.sequence + 1, command }));
+  const [marker, setMarker] = useState<Point2D | null>(null);
+  const [menu, setMenu] = useState<QuickMenuState | null>(null);
+  const [showProvinces, setShowProvinces] = useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  const camera = (command: CameraCommand, target?: Point2D) =>
+    setCameraEvent(previous => ({ sequence: previous.sequence + 1, command, target }));
+
+  const openQuickMenu = (request: MapContextRequest) => {
+    const rect = mapRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const point = positionQuickMenu(
+      { x: request.clientX - rect.left, y: request.clientY - rect.top },
+      { width: rect.width, height: rect.height },
+      { width: 272, height: Math.min(520, Math.max(rect.height - 16, 1)) },
+    );
+    setSelected(request.territory);
+    setHovered(null);
+    setShowProvinces(false);
+    setMenu({ ...point, territory: request.territory, worldPoint: request.worldPoint });
+  };
+
+  const openOrdersFromToolbar = () => {
+    const rect = mapRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const position = positionQuickMenu(
+      { x: rect.width - 285, y: rect.height - 555 },
+      { width: rect.width, height: rect.height },
+      { width: 272, height: Math.min(520, Math.max(rect.height - 16, 1)) },
+    );
+    setMenu({ ...position, territory: selected,
+      worldPoint: selected?.center ?? { x: 600, y: 360 } });
+    setShowProvinces(false);
+  };
+
+  const onAction = (action: QuickAction) => {
+    if (!menu) return;
+    switch (action) {
+      case 'inspect': setSelected(menu.territory); break;
+      case 'focus': if (menu.territory) camera('focus', menu.territory.center); break;
+      case 'mark': setMarker(menu.worldPoint); break;
+      case 'clear-mark': setMarker(null); break;
+      case 'reset': camera('reset'); break;
+      case 'natural': case 'political': case 'resources': setMapMode(action); break;
+    }
+    setMenu(null);
+  };
+
+  useEffect(() => {
+    if (!menu) return;
+    const dismiss = (event: PointerEvent) => {
+      if (!(event.target instanceof Element) || !event.target.closest('.map-context-menu')) setMenu(null);
+    };
+    const keys = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenu(null);
+    };
+    const resized = () => setMenu(null);
+    window.addEventListener('pointerdown', dismiss, true);
+    window.addEventListener('keydown', keys, true);
+    window.addEventListener('resize', resized);
+    return () => {
+      window.removeEventListener('pointerdown', dismiss, true);
+      window.removeEventListener('keydown', keys, true);
+      window.removeEventListener('resize', resized);
+    };
+  }, [menu]);
 
   return (
-    <div className="app-shell">
-      <header className="masthead">
-        <div className="brand-symbol" aria-hidden="true">山</div>
-        <div className="brand-lockup"><span className="eyebrow">SA BÀN · CHIẾN THUẬT 2D</span><h1>Sơn Hà Tranh Bá</h1></div>
-        <div className="header-right"><span className="version-marker">MAP ENGINE / 02</span><span className="header-seal" aria-hidden="true">ẤN</span></div>
-      </header>
-
-      <main className="workspace">
-        <section className="main-panel" aria-labelledby="map-title">
-          <div className="panel-heading">
-            <div><span className="eyebrow">ĐỊA GIỚI THỬ NGHIỆM</span><h2 id="map-title">Bản đồ giang sơn</h2></div>
-            <span className="heading-tag"><span className="heading-tag-dot" /> 6 vùng · Polygon 2D</span>
+    <div className="app-shell app-shell--game">
+      <main className="game-stage" ref={mapRef} aria-label="Sa bàn chiến thuật Sơn Hà Tranh Bá">
+        <MapCanvas selectedId={selected?.id ?? null} mapMode={mapMode} cameraEvent={cameraEvent}
+          marker={marker} onContextRequest={openQuickMenu}
+          onSelect={territory => { setSelected(territory); setMenu(null); setShowProvinces(false); }}
+          onHover={setHovered} onZoomChange={setZoom} />
+        <div className="game-vignette" aria-hidden="true" />
+        <header className="game-hud-top">
+          <div className="game-title">
+            <span className="game-seal" aria-hidden="true">山</span>
+            <div><span className="game-kicker">SA BÀN QUÂN CƠ · 2D</span><h1>Sơn Hà Tranh Bá</h1></div>
           </div>
-          <div className="map-toolbar" role="group" aria-label="Lớp bản đồ">
-            {(Object.keys(modeLabels) as MapMode[]).map((mode) =>
-              <button key={mode} type="button" className={`map-tab ${mapMode === mode ? 'map-tab--active' : ''}`}
-                aria-pressed={mapMode === mode} onClick={() => setMapMode(mode)}>{modeLabels[mode]}</button>)}
-          </div>
-          <div className="map-frame map-frame--interactive">
-            <MapCanvas selectedId={selected?.id ?? null} mapMode={mapMode} cameraEvent={cameraEvent}
-              onSelect={setSelected} onHover={setHovered} onZoomChange={setZoom} />
-            <div className="map-corner map-corner--tl" aria-hidden="true" />
-            <div className="map-corner map-corner--tr" aria-hidden="true" />
-            <div className="map-corner map-corner--bl" aria-hidden="true" />
-            <div className="map-corner map-corner--br" aria-hidden="true" />
-            {hovered && <div className="map-tooltip" aria-live="off"><b>{hovered.name}</b><span>{factionLabels[hovered.faction]} · {hovered.resource}</span><small>Nhấp để xem chi tiết</small></div>}
-            <div className="camera-controls" role="group" aria-label="Điều khiển camera">
-              <button type="button" onClick={() => camera('zoom-in')} aria-label="Phóng to bản đồ" title="Phóng to">+</button>
-              <button type="button" onClick={() => camera('zoom-out')} aria-label="Thu nhỏ bản đồ" title="Thu nhỏ">−</button>
-              <button type="button" onClick={() => camera('reset')} aria-label="Đặt lại camera" title="Về toàn bản đồ">⌂</button>
-              <span>{Math.round(zoom * 100)}%</span>
+          <div className="game-phase"><span className="game-phase-dot" /> GIAI ĐOẠN 2 · 6 VÙNG</div>
+          <details className="game-server-status">
+            <summary title="Kiểm tra kết nối game server"><span className={'game-connection-dot ' + (foundation.api === 'online' ? 'is-online' : '')} /> Hệ thống</summary>
+            <div className="game-server-details">
+              <p>Game API: <strong>{foundation.api}</strong></p>
+              <p>Database: <strong>{foundation.database}</strong></p>
+              <p>SignalR: <strong>{foundation.realtime}</strong></p>
+              <button type="button" disabled={foundation.realtime !== 'online'} onClick={() => void foundation.ping()}>Thử SignalR</button>
+              <small>{foundation.pong}</small>
             </div>
-            <div className="map-label">BẢN ĐỒ MỚI · 6 VÙNG</div>
-          </div>
-          <div className="map-caption">
-            <span>Kéo để di chuyển · Cuộn để zoom vào điểm trỏ · Nhấp để chọn vùng</span>
-            <span className="mute">Phím mũi tên/WASD, +/−, Home khi focus bản đồ</span>
-          </div>
-        </section>
-
-        <aside className="sidebar">
-          <section className="paper-card province-card" aria-live="polite">
-            <span className="eyebrow">ĐỊA CHÍ TRẤN PHỦ</span>
-            {selected ? <>
-              <div className="province-title"><h2>{selected.name}</h2><span className={`faction-mark faction-mark--${selected.faction}`}>{factionLabels[selected.faction]}</span></div>
-              <div className="province-stat"><span>Phân loại</span><strong>{selected.kind}</strong></div>
-              <div className="province-stat"><span>Tiềm năng tài nguyên</span><strong>{selected.resource}</strong></div>
-              <div className="province-stat"><span>Lãnh chúa</span><strong>Chưa triển khai</strong></div>
-              <div className="province-stat"><span>Quân đồn trú</span><strong>Chưa triển khai</strong></div>
-              <p className="province-note">Đường biên là dữ liệu bản đồ tĩnh. Chủ quyền và tài nguyên mới là minh họa — các cơ chế thực sẽ được xử lý bằng C# ở Phase 3–5.</p>
-              <button type="button" className="outline-button" onClick={() => setSelected(null)}>Bỏ chọn lãnh thổ</button>
-            </> : <>
-              <h2>Chọn một vùng đất</h2>
-              <p>Bản đồ được thiết kế mới gồm hai kinh đô và bốn trấn. Rê chuột vào mỗi vùng để nhìn thấy địa giới; nhấp để xem thông tin.</p>
-              <div className="paper-rule" />
-              <div className="province-placeholder">6 vùng · 2 kinh đô · 4 trấn</div>
-            </>}
-          </section>
-          <section className="paper-card territories-card">
-            <div className="card-title-row"><h2>Danh sách địa giới</h2><span className="live-label">BẢN NHÁP</span></div>
-            <div className="territory-list">
-              {TERRITORIES.map((territory) => <button key={territory.id} type="button"
-                className={`territory-list-item ${selected?.id === territory.id ? 'territory-list-item--active' : ''}`}
-                onClick={() => setSelected(territory)}>
-                <span className={`territory-dot territory-dot--${territory.faction}`} />{territory.name}
-                <small>{territory.kind === 'Kinh đô' ? 'Kinh đô' : territory.resource}</small>
-              </button>)}
-            </div>
-          </section>
-          <details className="paper-card diagnostics-card">
-            <summary>Kiểm tra hệ thống (Phase 1)</summary>
-            <StatusItem label="C# / .NET API" status={foundation.api} />
-            <StatusItem label="PostgreSQL" status={foundation.database} />
-            <StatusItem label="SignalR" status={foundation.realtime} />
-            <div className="tick-panel"><div><span className="minor-label">HEARTBEAT</span><strong>{foundation.ticks.toLocaleString('vi-VN')}</strong></div><span className="small-note">Chưa phải game loop</span></div>
-            <button className="seal-button" type="button" onClick={() => void foundation.ping()} disabled={foundation.realtime !== 'online'}>Ping Game Server ↗</button>
-            <p className="ping-result">{foundation.pong}</p>
           </details>
-        </aside>
+        </header>
+
+        <div className="map-hover-label" aria-live="off">
+          <span className="map-hover-flourish" aria-hidden="true">✦</span>
+          {hovered && !menu ? <><strong>{hovered.name}</strong><span>{factions[hovered.faction]} · {hovered.resource}</span></>
+            : <><strong>Bản đồ quân cơ</strong><span>Nhấp trái chọn vùng · Nhấp phải mở quân lệnh</span></>}
+        </div>
+
+        <div className="game-side-tools" role="group" aria-label="Điều khiển bản đồ">
+          <button type="button" onClick={() => camera('zoom-in')} aria-label="Phóng to" title="Phóng to">＋</button>
+          <button type="button" onClick={() => camera('zoom-out')} aria-label="Thu nhỏ" title="Thu nhỏ">−</button>
+          <button type="button" onClick={() => camera('reset')} aria-label="Về toàn bản đồ" title="Về toàn bản đồ">⌂</button>
+          <span className="game-zoom" aria-live="off">{Math.round(zoom * 100)}%</span>
+        </div>
+
+        <div className="map-compass" aria-hidden="true"><span>BẮC</span><strong>✥</strong></div>
+
+        <div className="game-hud-bottom">
+          <button className={'game-province-toggle' + (showProvinces ? ' is-current' : '')} type="button"
+            onClick={() => { setShowProvinces(current => !current); setMenu(null); }} aria-expanded={showProvinces}>
+            <span className="hud-glyph" aria-hidden="true">▤</span>
+            <span>Địa chí <small>6 trấn phủ</small></span>
+          </button>
+          <nav className="game-mode-tabs" aria-label="Các lớp bản đồ">
+            {modeOptions.map(option => (
+              <button type="button" key={option.id} aria-pressed={mapMode === option.id}
+                className={'game-mode-tab' + (mapMode === option.id ? ' is-current' : '')}
+                onClick={() => { setMapMode(option.id); setMenu(null); }}>
+                <span className="hud-glyph" aria-hidden="true">{option.symbol}</span><span>{option.title}</span>
+              </button>
+            ))}
+          </nav>
+          <button type="button" className="game-cmd-hint" onClick={openOrdersFromToolbar}
+            aria-label="Mở menu quân lệnh nhanh"><span>CHUỘT PHẢI / LỆNH</span><strong>Quân lệnh nhanh</strong></button>
+        </div>
+
+        {showProvinces && (
+          <aside className="game-province-list" aria-label="Danh sách trấn phủ">
+            <div className="game-drawer-heading"><span>ĐỊA CHÍ LỤC TRẤN</span><button onClick={() => setShowProvinces(false)} type="button" aria-label="Đóng danh sách">×</button></div>
+            {TERRITORIES.map(territory =>
+              <button type="button" key={territory.id} className={'game-province-entry' + (selected?.id === territory.id ? ' is-selected' : '')}
+                onClick={() => { setSelected(territory); setShowProvinces(false); camera('focus', territory.center); }}>
+                <span className={'province-emblem province-emblem--' + territory.faction} aria-hidden="true">{territory.kind === 'Kinh đô' ? '▣' : '⌂'}</span>
+                <span><strong>{territory.name}</strong><small>{territory.kind} · {territory.resource}</small></span>
+              </button>
+            )}
+          </aside>
+        )}
+
+        {selected && (
+          <aside className="game-province-detail" aria-label={'Địa chí ' + selected.name}>
+            <div className="game-detail-title">
+              <span className="game-detail-kicker">TRẤN PHỦ · ĐỊA CHÍ</span>
+              <button type="button" aria-label="Đóng địa chí" onClick={() => setSelected(null)}>×</button>
+            </div>
+            <div className="game-detail-herald">
+              <span className={'province-emblem province-emblem--' + selected.faction} aria-hidden="true">{selected.kind === 'Kinh đô' ? '▣' : '⌂'}</span>
+              <div><h2>{selected.name}</h2><span>{factions[selected.faction]}</span></div>
+            </div>
+            <div className="game-province-fields">
+              <div><span>◈ Loại vùng</span><strong>{selected.kind}</strong></div>
+              <div><span>✥ Tài nguyên</span><strong>{selected.resource}</strong></div>
+              <div><span>♜ Lãnh chúa</span><strong>Chưa triển khai</strong></div>
+              <div><span>⚑ Quân đồn trú</span><strong>Chưa triển khai</strong></div>
+            </div>
+            <p>Chủ quyền và tài nguyên đang là dữ liệu mẫu. Kinh tế, quân đội, lãnh chúa sẽ kết nối C# ở các giai đoạn tiếp theo.</p>
+            <button type="button" className="game-locate" onClick={() => camera('focus', selected.center)}>⌖ Định vị vùng</button>
+          </aside>
+        )}
+
+        {menu && (
+          <MapContextMenu menu={menu} mode={mapMode} hasMarker={marker !== null}
+            onAction={onAction} onClose={() => setMenu(null)} />
+        )}
+        <div className="game-map-caption" aria-hidden="true">BẢN ĐỒ THỬ NGHIỆM · CHƯA CÓ GAMEPLAY</div>
       </main>
-      <footer className="site-footer"><span>SƠN HÀ TRANH BÁ · BẢN ĐỒ THỬ NGHIỆM</span><span>Phase 2 — Bản đồ 2D mới; chưa có gameplay</span></footer>
     </div>
   );
 }

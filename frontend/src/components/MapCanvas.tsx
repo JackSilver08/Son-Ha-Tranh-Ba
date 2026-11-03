@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js';
-import { MAP_HEIGHT, MAP_WIDTH, TERRITORIES, territoryAt, type MapMode, type Territory } from '../map/territories';
+import { MAP_HEIGHT, MAP_WIDTH, TERRITORIES, territoryAt, type MapMode, type Point2D, type Territory } from '../map/territories';
 
-export type CameraCommand = 'reset' | 'zoom-in' | 'zoom-out';
-export type CameraEvent = { sequence: number; command: CameraCommand };
+export type CameraCommand = 'reset' | 'zoom-in' | 'zoom-out' | 'focus';
+export type CameraEvent = { sequence: number; command: CameraCommand; target?: Point2D };
+export type MapContextRequest = { clientX: number; clientY: number; worldPoint: Point2D; territory: Territory | null };
 type Props = {
   selectedId: string | null;
   mapMode: MapMode;
   cameraEvent: CameraEvent;
+  marker: Point2D | null;
+  onContextRequest: (request: MapContextRequest) => void;
   onSelect: (territory: Territory | null) => void;
   onHover: (territory: Territory | null) => void;
   onZoomChange: (zoom: number) => void;
@@ -16,6 +19,7 @@ type Scene = {
   app: Application;
   world: Container;
   overlays: Graphics[];
+  markerGraphic: Graphics;
   viewWidth: number;
   viewHeight: number;
   fit: number;
@@ -58,29 +62,86 @@ function repaint(scene: Scene, mode: MapMode, selectedId: string | null) {
       : COLORS[territory.faction];
     const graphic = scene.overlays[index];
     graphic.clear().poly(territory.polygon, true)
-      .fill({ color: fill, alpha: selected ? 0.29 : hovered ? 0.19 : overview ? 0.17 : 0.008 });
+      .fill({ color: fill, alpha: selected ? 0.22 : hovered ? 0.17 : overview ? 0.14 : 0.002 });
     if (selected || hovered || overview || mode === 'natural') {
       graphic.poly(territory.polygon, true).stroke({
         color: selected ? 0xf9d891 : hovered ? 0xffebbc : 0xf0ddb0,
-        alpha: selected ? 1 : hovered ? 0.95 : overview ? 0.56 : 0.28,
-        width: selected ? 3 : hovered ? 2.2 : overview ? 1.2 : 0.9,
+        alpha: selected ? 1 : hovered ? 0.94 : overview ? 0.58 : 0.18,
+        width: selected ? 3 : hovered ? 2.3 : overview ? 1.2 : 0.8,
       });
     }
   });
 }
 
-/** Phase 2: map-space province polygons, pan, cursor-anchored zoom and selection. */
-export function MapCanvas({ selectedId, mapMode, cameraEvent, onSelect, onHover, onZoomChange }: Props) {
+/** Original vector crests for each province, independent of the map artwork. */
+function addRegionSymbol(world: Container, territory: Territory) {
+  const badge = new Container();
+  badge.position.set(territory.center.x, territory.center.y);
+  const factionColor = territory.faction === 'west' ? 0x567d65 : 0x9d5641;
+  const plate = new Graphics();
+  plate.ellipse(0, 12, 45, 14).fill({ color: 0x364733, alpha: .18 });
+  plate.roundRect(-39, -42, 78, 78, 5).fill({ color: 0xead8b0, alpha: .98 })
+    .stroke({ color: 0x3f3d2a, width: 2.6 });
+  plate.roundRect(-34, -37, 68, 68, 3).stroke({ color: factionColor, width: 2, alpha: .88 });
+  plate.poly([{x:0,y:-48},{x:39,y:-28},{x:32,y:26},{x:0,y:43},{x:-32,y:26},{x:-39,y:-28}],true)
+    .stroke({ color: factionColor, width: 1.8, alpha: .5 });
+  if (territory.kind === 'Kinh đô') {
+    plate.rect(-22,-3,44,25).fill({color:0x716c56}).stroke({color:0x493f2f,width:1.5});
+    for(const x of [-19,0,19]) {
+      plate.rect(x-7,-18,14,35).fill({color:0xb6a47b}).stroke({color:0x584a33,width:1});
+      plate.poly([{x:x-10,y:-18},{x,y:-32},{x:x+10,y:-18}],true).fill({color:factionColor});
+    }
+    plate.roundRect(-8,9,16,13,5).fill({color:0x3d3c31});
+    plate.moveTo(18,-28).lineTo(18,-46).stroke({color:0x484533,width:1.4});
+    plate.poly([{x:18,y:-45},{x:42,y:-39},{x:18,y:-32}],true).fill({color:factionColor});
+  } else {
+    plate.rect(-20,-4,40,27).fill({color:0xc6ac7e}).stroke({color:0x66523c,width:1.7});
+    plate.poly([{x:-28,y:-4},{x:0,y:-32},{x:28,y:-4}],true).fill({color:factionColor})
+      .stroke({color:0x563f32,width:1.5});
+    plate.rect(-6,9,12,14).fill({color:0x4e4634});
+    plate.rect(12,3,5,7).fill({color:0xe7d6ae});
+  }
+  badge.addChild(plate);
+  const label = new Text({text:territory.name.toUpperCase(), style:{
+    fontFamily:'Georgia, serif',fontSize:14,fontWeight:'bold',letterSpacing:1.1,fill:0xf3e5be
+  }});
+  label.anchor.set(.5, .5);
+  label.position.set(0,63);
+  const scroll = new Graphics();
+  scroll.roundRect(-(label.width+30)/2,47,label.width+30,31,3)
+    .fill({color:0x25382e,alpha:.92}).stroke({color:factionColor,width:2});
+  badge.addChild(scroll,label);
+  world.addChild(badge);
+}
+
+function repaintMarker(scene: Scene, point: Point2D | null) {
+  const graphic = scene.markerGraphic;
+  graphic.clear();
+  if (!point) return;
+  const {x,y} = point;
+  graphic.circle(x,y,18).fill({color:0xf1dfb1,alpha:.26}).stroke({color:0x9f4c39,width:2.6});
+  graphic.circle(x,y,3.4).fill({color:0x9f4c39});
+  graphic.moveTo(x,y-4).lineTo(x,y-38).stroke({color:0x3e3b2e,width:2.8});
+  graphic.poly([{x,y:y-36},{x:x+24,y:y-30},{x,y:y-22}],true)
+    .fill({color:0xa9503d}).stroke({color:0xe9d2a3,width:1});
+}
+
+/** Phase 2: symbol-led 2D province map, pan, zoom, right-click quick orders. */
+export function MapCanvas({ selectedId, mapMode, cameraEvent, marker, onContextRequest, onSelect, onHover, onZoomChange }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<Scene | null>(null);
-  const propsRef = useRef({ selectedId, mapMode, onSelect, onHover, onZoomChange });
+  const propsRef = useRef({ selectedId, mapMode, onContextRequest, onSelect, onHover, onZoomChange });
   const [error, setError] = useState<string | null>(null);
-  propsRef.current = { selectedId, mapMode, onSelect, onHover, onZoomChange };
+  propsRef.current = { selectedId, mapMode, onContextRequest, onSelect, onHover, onZoomChange };
 
   useEffect(() => {
     const scene = sceneRef.current;
     if (scene) repaint(scene, mapMode, selectedId);
   }, [mapMode, selectedId]);
+
+  useEffect(() => {
+    if (sceneRef.current) repaintMarker(sceneRef.current, marker);
+  }, [marker]);
 
   useEffect(() => {
     if (cameraEvent.sequence === 0) return;
@@ -90,8 +151,16 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, onSelect, onHover,
       scene.zoom = 1;
       scene.world.scale.set(scene.fit);
       confine(scene);
-    } else {
-      zoomAt(scene, cameraEvent.command === 'zoom-in' ? 1.35 : 1 / 1.35, scene.viewWidth / 2, scene.viewHeight / 2);
+    } else if (cameraEvent.command === 'focus' && cameraEvent.target) {
+      scene.zoom = Math.max(scene.zoom, 1.65);
+      const scale = scene.fit * scene.zoom;
+      scene.world.scale.set(scale);
+      scene.world.position.set(scene.viewWidth/2 - cameraEvent.target.x*scale,
+        scene.viewHeight/2 - cameraEvent.target.y*scale);
+      confine(scene);
+    } else if (cameraEvent.command === 'zoom-in' || cameraEvent.command === 'zoom-out') {
+      zoomAt(scene, cameraEvent.command === 'zoom-in' ? 1.35 : 1/1.35,
+        scene.viewWidth/2, scene.viewHeight/2);
     }
     propsRef.current.onZoomChange(scene.zoom);
   }, [cameraEvent]);
@@ -120,36 +189,27 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, onSelect, onHover,
       const texture = await Assets.load('/assets/son-ha-world.svg');
       if (cancelled) return;
       const world = new Container();
-      world.addChild(new Sprite(texture));
+      const background = new Sprite(texture);
+      background.width = MAP_WIDTH;
+      background.height = MAP_HEIGHT;
+      world.addChild(background);
       const overlays = TERRITORIES.map(() => {
         const graphic = new Graphics();
         world.addChild(graphic);
         return graphic;
       });
-      // Labels are map-space children, so zoom/pan always remain aligned.
-      for (const territory of TERRITORIES) {
-        const label = new Text({ text: territory.name.toUpperCase(), style: {
-          fontFamily: 'Georgia, serif', fontSize: 14, fontWeight: 'bold',
-          fill: 0xf1e2bd, letterSpacing: 0.8
-        } });
-        label.anchor.set(0.5);
-        const plate = new Graphics();
-        plate.roundRect(-(label.width + 26) / 2, -15, label.width + 26, 30, 4)
-          .fill({ color: 0x27352b, alpha: 0.9 })
-          .stroke({ color: territory.faction === 'west' ? 0x9ab49b : 0xd1aa8c, width: 1 });
-        const badge = new Container();
-        badge.position.set(territory.center.x, territory.center.y + (territory.kind === 'Kinh đô' ? 64 : territory.id.includes('bac') ? 56 : 37));
-        badge.addChild(plate, label);
-        world.addChild(badge);
-      }
+      for (const territory of TERRITORIES) addRegionSymbol(world, territory);
+      const markerGraphic = new Graphics();
+      world.addChild(markerGraphic);
       next.stage.addChild(world);
       const scene: Scene = {
-        app: next, world, overlays,
+        app: next, world, overlays, markerGraphic,
         viewWidth: host.clientWidth, viewHeight: host.clientHeight,
         fit: 1, zoom: 1, hoveredId: null,
       };
       sceneRef.current = scene;
       repaint(scene, propsRef.current.mapMode, propsRef.current.selectedId);
+      repaintMarker(scene, marker);
 
       const resize = () => {
         const centerX = (scene.viewWidth / 2 - world.x) / world.scale.x;
@@ -173,7 +233,7 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, onSelect, onHover,
       observer = new ResizeObserver(resize);
       observer.observe(host);
 
-      const position = (event: PointerEvent | WheelEvent) => {
+      const position = (event: MouseEvent | PointerEvent | WheelEvent) => {
         const rect = next.canvas.getBoundingClientRect();
         return { x: (event.clientX - rect.left) * scene.viewWidth / rect.width, y: (event.clientY - rect.top) * scene.viewHeight / rect.height };
       };
@@ -218,6 +278,15 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, onSelect, onHover,
           repaint(scene, propsRef.current.mapMode, propsRef.current.selectedId);
         }
       };
+      const contextMenu = (e: MouseEvent) => {
+        e.preventDefault();
+        const p = position(e);
+        const worldPoint = { x: (p.x - world.x) / world.scale.x, y: (p.y - world.y) / world.scale.y };
+        propsRef.current.onContextRequest({
+          clientX: e.clientX, clientY: e.clientY, worldPoint,
+          territory: territoryAt(worldPoint),
+        });
+      };
       const wheel = (e: WheelEvent) => {
         e.preventDefault();
         const p = position(e);
@@ -241,13 +310,14 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, onSelect, onHover,
         e.preventDefault();
       };
       next.canvas.tabIndex = 0;
-      next.canvas.setAttribute('aria-label', 'Sa bàn 2D: kéo để di chuyển, cuộn để phóng to, bấm để chọn lãnh thổ');
+      next.canvas.setAttribute('aria-label', 'Sa bàn 2D: kéo, zoom, chọn vùng bằng chuột trái và mở quân lệnh nhanh bằng chuột phải');
       next.canvas.addEventListener('pointerdown', down);
       next.canvas.addEventListener('pointermove', move);
       next.canvas.addEventListener('pointerup', up);
       next.canvas.addEventListener('pointercancel', up);
       next.canvas.addEventListener('pointerleave', exit);
       next.canvas.addEventListener('wheel', wheel, { passive: false });
+      next.canvas.addEventListener('contextmenu', contextMenu);
       next.canvas.addEventListener('keydown', keydown);
       cleanup.push(() => {
         next.canvas.removeEventListener('pointerdown', down);
@@ -256,6 +326,7 @@ export function MapCanvas({ selectedId, mapMode, cameraEvent, onSelect, onHover,
         next.canvas.removeEventListener('pointercancel', up);
         next.canvas.removeEventListener('pointerleave', exit);
         next.canvas.removeEventListener('wheel', wheel);
+        next.canvas.removeEventListener('contextmenu', contextMenu);
         next.canvas.removeEventListener('keydown', keydown);
       });
     };

@@ -1,0 +1,39 @@
+
+/* In-map strategy context menu. Symbol-led, parchment, keyboard navigable. */
+.map-frame--interactive .map-context-menu {
+  position: absolute; z-index: 12; width: 272px; max-width: calc(100% - 16px);
+  max-height: calc(100% - 16px); overflow-x: hidden; overflow-y: auto;
+  color: #392a1f; background: #efe0bf;
+  border: 1px solid #b18c58; border-radius: 6px;
+  box-shadow: 0 22px 65px #11190ed8, inset 0 0 0 3px #f8ebcb, inset 0 0 0 4px #c8ae7b;
+  padding: 7px 7px 5px; cursor: default; animation: quick-unfold 130ms ease-out;
+  overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #bda47b transparent;
+}
+@keyframes quick-unfold { from { opacity: .4; transform: translateY(-5px) scale(.98); } to {opacity: 1; transform: none;} }
+.quick-menu-heading { display: flex; align-items: center; gap: 9px; border-bottom: 1px solid #bea67e; padding: 7px 5px 11px; }
+.quick-menu-seal { display: grid; place-items: center; width: 30px; height: 34px; background: #9f4e3e; color: #f9e8c5; font: 22px Georgia,serif; border: 1px double #d2a578; }
+.quick-menu-heading > span:nth-child(2) { min-width: 0; display: grid; gap: 3px; }
+.quick-menu-heading small { font-size: 8px; letter-spacing: 1.8px; font-weight: 800; color: #9a7545; }
+.quick-menu-heading strong { font: 17px Georgia,serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quick-menu-close { margin-left: auto; flex: 0 0 24px; height: 24px; border: 0; background: transparent; color: #815f42; cursor: pointer; font-size: 19px; }
+.quick-menu-close:hover { background: #e0c99f; }
+.quick-menu-section { display: flex; align-items: center; justify-content: space-between; margin: 9px 5px 4px; color: #906c42; font-weight: 800; font-size: 9px; letter-spacing: 1.6px; }
+.quick-menu-section > span { font-size: 8px; letter-spacing: .3px; color: #a28b68; }
+.quick-menu-item { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; min-height: 35px;
+  color: #453728; border: 1px solid transparent; border-radius: 3px; background: transparent; padding: 5px 8px; cursor: pointer; }
+.quick-menu-item:hover:not(:disabled), .quick-menu-item:focus-visible { background: #ddc69a; border-color: #bba071; outline: none; }
+.quick-menu-item:disabled { cursor: not-allowed; opacity: .46; }
+.quick-menu-symbol { width: 24px; height: 24px; flex: 0 0 24px; display: grid; place-items: center; border: 1px solid #c5ac7f;
+  background: #e4d3ac; color: #854c3c; font: 18px Georgia,serif; }
+.quick-menu-item-copy { display: grid; gap: 1px; min-width: 0; }
+.quick-menu-item-copy strong { font-size: 11px; font-weight: 730; }
+.quick-menu-item-copy small { font-size: 9px; color: #867258; }
+.quick-menu-check, .quick-menu-lock { margin-left: auto; font-size: 11px; color: #7d5d37; }
+.quick-menu-mode-row { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; margin: 4px 2px; }
+.quick-menu-mode-row button { display: grid; place-items: center; gap: 3px; min-width: 0; padding: 6px 1px; cursor: pointer;
+  border: 1px solid #c8ac7b; background: #e5d3af; color: #5b4b32; font: 19px Georgia,serif; border-radius: 3px; }
+.quick-menu-mode-row button span { font: 9px Inter, sans-serif; }
+.quick-menu-mode-row button:hover, .quick-menu-mode-row button:focus-visible { border-color: #96663d; outline: none; }
+.quick-menu-mode-row button.is-active { background: #a25843; color: #fdf0d4; border-color: #8f4636; }
+.quick-menu-foot { padding: 9px 4px 3px; font-size: 9px; text-align: center; color: #968064; border-top: 1px solid #cfba92; margin-top: 9px; }
+@media (prefers-reduced-motion: reduce) { .map-frame--interactive .map-context-menu { animation: none; } }

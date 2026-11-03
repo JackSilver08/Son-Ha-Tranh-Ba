@@ -1,3 +1,15 @@
+# Sơn Hà Tranh Bá — Phase 2.1: Sa bàn ký hiệu và quân lệnh nhanh
+
+- Giao diện mới: **2D Symbol-Based Strategy Map** chiếm toàn màn hình, bỏ sidebar cố định.
+- Bản đồ SVG riêng theo phong cách tranh khắc dân gian, tập trung vào ký hiệu núi, rừng, đồng ruộng, khoáng sản.
+- Sáu vùng Polygon, huy hiệu riêng cho 2 kinh đô và 4 trấn, hover/click, zoom/pan và các chế độ bản đồ như cũ.
+- **Chuột phải** để mở menu quân lệnh tại vị trí trỏ: địa chí, định vị, đặt/xóa dấu chỉ huy, chuyển chế độ xem, reset camera.
+- Có thể mở menu qua nút ở thanh lệnh. Xây dựng, tuyển quân và điều quân chưa khả dụng vì đang chờ gameplay C# Phase 3–4.
+- Lệnh chạy: `docker compose up --build -d`, truy cập http://localhost:8080.
+- Kiểm tra hình học và menu: `cd frontend && npm run test:map && npm run test:quick-menu`.
+
+---
+
 # Sơn Hà Tranh Bá — Phase 2: Bản đồ 2D tự thiết kế, 6 vùng
 
 Bản đồ trước là hình tham khảo, **không còn sử dụng làm nền chạy game**. Bản đồ thay thế là SVG 2D nguyên bản gồm biển, đất, rừng, ruộng, làng, dãy núi và hai kinh đô. Có 6 vùng lãnh thổ chia thành 3 vùng mỗi phe, mỗi vùng là một polygon có thể hover, click, xem thông tin; zoom/pan và ba lớp bản đồ giữ nguyên. Các lớp tương tác nằm trong PixiJS.

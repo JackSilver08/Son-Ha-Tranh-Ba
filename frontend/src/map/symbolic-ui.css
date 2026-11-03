@@ -1,0 +1,131 @@
+/* Sơn Hà Tranh Bá — symbol-first immersive game HUD (Phase 2). */
+:root { --paper:#f0dfb8; --ink:#3e3526; --seal:#a54e3b; --gold:#c4a372; }
+.app-shell--game { min-height: 100dvh; height: 100dvh; padding: 0; overflow: hidden;
+  background:#15231e; font-family: Georgia, 'Times New Roman', serif; }
+.game-stage { position:relative; width:100%; height:100%; overflow:hidden; background:#819288;
+  isolation:isolate; }
+.game-stage .map-host { position:absolute; inset:0; }
+.game-stage .map-host canvas { display:block; width:100%; height:100%; touch-action:none; }
+.game-vignette { position:absolute; inset:0; z-index:1; pointer-events:none;
+  box-shadow: inset 0 0 110px #1a262b55, inset 0 0 0 8px #e3c9a36b, inset 0 0 0 11px #594d36a3; }
+.game-hud-top { position:absolute; top:14px; left:21px; right:21px; z-index:4; display:flex; align-items:center;
+  justify-content:space-between; gap:14px; pointer-events:none; }
+.game-title { display:flex; align-items:center; gap:12px; padding:8px 18px 9px 8px; color:#352b1e; background:#f0dfb9ec;
+  border:1px solid #be9d69; box-shadow:0 8px 28px #20180b30, inset 0 0 0 2px #fff6daaa;
+  border-radius:3px; pointer-events:auto; }
+.game-seal { width:45px; height:47px; display:grid; place-items:center; color:#f5e1b6;
+  background:#a94b37; border:3px double #deb48a; font:30px Georgia,serif; }
+.game-kicker { color:#906d48; font:800 9px Inter,system-ui,sans-serif; letter-spacing:1.8px; }
+.game-title h1 { font-size:clamp(18px,1.8vw,29px); font-weight:600; letter-spacing:.5px; margin:4px 0 0; white-space:nowrap; }
+.game-phase { padding:10px 16px; border:1px solid #bb9b65; background:#e8d7afe6;
+  color:#61503a; font:800 10px Inter,system-ui,sans-serif; letter-spacing:1.5px; white-space:nowrap; }
+.game-phase-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:#71845c; margin-right:5px; }
+.game-server-status { pointer-events:auto; position:relative; color:#433526; font:12px Inter,system-ui,sans-serif; }
+.game-server-status summary { list-style:none; cursor:pointer; background:#efdfc0ec; border:1px solid #bda174;
+  padding:13px 15px; font-weight:700; user-select:none; }
+.game-server-status summary::-webkit-details-marker {display:none;}
+.game-connection-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:#b05c4a; margin-right:5px; }
+.game-connection-dot.is-online { background:#5d875e; }
+.game-server-details { position:absolute; right:0; top:calc(100% + 6px); width:226px; padding:15px; background:#f0e2c2;
+  border:1px solid #b9a078; box-shadow:0 12px 35px #241b1360; }
+.game-server-details p {display:flex; justify-content:space-between; margin:0; padding:8px 0; border-bottom:1px solid #c8b593;}
+.game-server-details button { width:100%; margin:12px 0 5px; border:1px solid #926448; padding:9px; cursor:pointer; background:#e1cda5; }
+.game-server-details small { font-size:10px; overflow-wrap:anywhere; }
+.map-hover-label { position:absolute; z-index:3; top:92px; left:50%; transform:translateX(-50%); display:flex;
+  align-items:center; gap:9px; background:#efe1c2e6; color:#493c2b; border:1px solid #b89f78; padding:9px 15px;
+  font:11px Inter,system-ui,sans-serif; white-space:nowrap; pointer-events:none; box-shadow:0 4px 12px #21231822; }
+.map-hover-label strong { font-size:12px; color:#3f3423; }
+.map-hover-label span:last-child { opacity:.7; }
+.map-hover-flourish { color:#9d4e3e; font-size:15px; }
+.game-side-tools { position:absolute; right:23px; top:120px; display:flex; flex-direction:column; align-items:center;
+  gap:3px; z-index:4; }
+.game-side-tools button { display:grid; place-items:center; width:41px; height:41px; border:1px solid #b9986a;
+  color:#58432f; background:#f1dfbcee; font:24px Georgia,serif; cursor:pointer; box-shadow:0 3px 10px #151f1a44; }
+.game-side-tools button:hover,.game-side-tools button:focus-visible { background:#fff0d0; outline:2px solid #a26643; }
+.game-zoom { margin-top:5px; background:#2d342ecb; color:#efe0b8; padding:5px 7px; font:11px Inter,system-ui,sans-serif; }
+.map-compass { position:absolute; z-index:2; left:32px; top:135px; display:grid; gap:3px; justify-items:center;
+  color:#453e2e; opacity:.6; pointer-events:none; text-shadow:0 1px 0 #fff9d3; }
+.map-compass span {font:800 9px Inter,system-ui,sans-serif; letter-spacing:2px;}
+.map-compass strong {font:55px Georgia,serif; line-height:1;}
+.game-hud-bottom { position:absolute; bottom:19px; left:24px; right:24px; display:flex; align-items:end;
+  justify-content:space-between; gap:12px; z-index:4; pointer-events:none; }
+.game-hud-bottom > * {pointer-events:auto;}
+.game-province-toggle { display:flex; align-items:center; gap:11px; min-width:152px; padding:10px 13px;
+  background:#efe0c1ed; color:#423323; border:1px solid #aa8555; cursor:pointer;
+  box-shadow:0 7px 22px #211b1433; text-align:left; font:600 13px Georgia,serif; }
+.game-province-toggle small {display:block; font:9px Inter,system-ui,sans-serif; color:#927455; margin-top:3px;}
+.hud-glyph { display:grid; place-items:center; width:32px; height:32px; flex:0 0 32px;
+  color:#a34e3b; font:24px Georgia,serif; border:1px solid #c7b187; background:#e2d0a9; border-radius:3px; }
+.game-mode-tabs { display:flex; gap:5px; background:#ead8b3ed; padding:5px; border:1px solid #ae8955;
+  box-shadow:0 8px 25px #28231844; border-radius:3px; }
+.game-mode-tab {display:flex; align-items:center; gap:8px; border:1px solid transparent; background:transparent;
+  color:#514532; padding:7px 12px; cursor:pointer; font:700 11px Inter,system-ui,sans-serif; }
+.game-mode-tab.is-current { background:#a4503b; color:#fff2d5; border-color:#87402d; }
+.game-mode-tab.is-current .hud-glyph { background:#bb6b54; color:#fff3db; border-color:#cf977c; }
+.game-mode-tab:hover:not(.is-current) { background:#dcc59c; }
+.game-cmd-hint { min-width:148px; background:#efe0c0e5; color:#4c3f2e; border:1px solid #b69666;
+  padding:12px; text-align:right; }
+.game-cmd-hint span { display:block; letter-spacing:1.3px; color:#a04d3d; font:800 9px Inter,system-ui,sans-serif; }
+.game-cmd-hint strong { display:block; font:14px Georgia,serif; margin-top:3px; }
+.game-province-detail,.game-province-list { position:absolute; z-index:5; top:100px; right:83px; width:330px;
+  max-width:calc(100% - 38px); max-height:calc(100% - 215px); overflow:auto;
+  background:#efdfbe; border:1px solid #bda278; box-shadow:0 14px 45px #1b21167d, inset 0 0 0 4px #f9eccfa8;
+  padding:19px; color:#3f3123; }
+.game-province-list { right:auto; left:25px; top:auto; bottom:93px; max-height:55vh; width:300px; }
+.game-drawer-heading,.game-detail-title {display:flex; justify-content:space-between; align-items:center; color:#976f43;
+  border-bottom:1px solid #c6aa7c; padding-bottom:11px; font:800 10px Inter,system-ui,sans-serif; letter-spacing:1.5px;}
+.game-drawer-heading button,.game-detail-title button {border:0; background:transparent; color:#864839; cursor:pointer; font:23px Georgia,serif;}
+.game-detail-herald {display:flex; align-items:center; gap:14px; margin:19px 0; }
+.game-detail-herald .province-emblem {width:61px; height:63px; font-size:31px;}
+.game-detail-herald h2 {margin:0 0 5px; font:24px Georgia,serif;}
+.game-detail-herald span:last-child {font:11px Inter,system-ui,sans-serif; color:#8b6c48;}
+.province-emblem {width:40px; height:40px; flex:0 0 auto; display:grid; place-items:center; color:#f8e9c2; font:23px Georgia,serif;
+  border:2px double #d7bc89; border-radius:50%; background:#5e8069; }
+.province-emblem--east {background:#a65d46;}
+.game-province-fields {border-block:1px solid #c4a980; }
+.game-province-fields div {display:flex; justify-content:space-between; align-items:center; gap:12px; border-bottom:1px dashed #c9b592;
+  padding:11px 0; font:12px Inter,system-ui,sans-serif;}
+.game-province-fields div:last-child {border:0;}
+.game-province-fields span {color:#776447;}
+.game-province-fields strong {text-align:right; font-size:11px;}
+.game-province-detail p {color:#7d6547; font:11px/1.7 Inter,system-ui,sans-serif; margin:18px 0;}
+.game-locate {width:100%; padding:12px; background:#9e513f; color:#fff2d4; border:1px solid #854034; cursor:pointer; font:700 12px Inter,system-ui,sans-serif;}
+.game-province-entry { display:flex; gap:11px; align-items:center; width:100%; border:0; background:transparent;
+  border-bottom:1px solid #d5c29b; padding:10px 3px; text-align:left; cursor:pointer; color:#483929;}
+.game-province-entry:hover,.game-province-entry.is-selected {background:#e1cca4;}
+.game-province-entry strong {display:block; font:15px Georgia,serif;}
+.game-province-entry small {display:block; margin-top:4px; color:#92765a; font:10px Inter,system-ui,sans-serif;}
+.game-map-caption { position:absolute; bottom:90px; left:50%; transform:translateX(-50%); z-index:2;
+  color:#514a35ab; font:800 9px Inter,system-ui,sans-serif; letter-spacing:2px; pointer-events:none; white-space:nowrap; }
+@media(max-width:950px) { .game-phase {display:none;} .map-hover-label {top:88px;} .game-cmd-hint {display:none;}
+  .game-hud-bottom {bottom:14px; left:14px; right:14px;} .game-province-detail {right:76px; top:100px; width:300px;} }
+@media(max-width:650px) {
+  .game-hud-top {left:9px; right:9px; top:9px;} .game-title {padding:5px 8px; gap:7px;}
+  .game-title h1 {font-size:16px;} .game-kicker {font-size:7px; letter-spacing:.6px;}
+  .game-seal {width:35px; height:38px; font-size:21px;}
+  .game-server-status summary {padding:13px 8px; font-size:10px;}
+  .map-hover-label {top:76px; left:10px; transform:none; max-width:calc(100% - 80px); white-space:normal; font-size:10px; padding:7px;}
+  .map-compass {top:134px; left:18px;}.map-compass strong{font-size:38px;}
+  .game-side-tools {top:115px; right:12px;}.game-side-tools button{width:34px;height:34px;font-size:20px;}
+  .game-hud-bottom {bottom:11px; flex-wrap:wrap; justify-content:center; gap:7px;}
+  .game-province-toggle {min-width:unset; padding:6px; font-size:0;} .game-province-toggle >span:last-child {display:none;}
+  .game-mode-tabs {flex:1; justify-content:center;} .game-mode-tab{padding:5px; gap:4px; font-size:9px;}
+  .hud-glyph {width:24px;height:24px;flex-basis:24px;font-size:18px;}
+  .game-province-detail {top:auto; left:9px; right:9px; bottom:78px; width:auto; max-width:none; max-height:49%; padding:13px;}
+  .game-province-list {left:9px; bottom:78px; width:calc(100% - 18px); max-height:50%;}
+  .game-map-caption {bottom:85px; font-size:8px; letter-spacing:.5px;}
+}
+@media(prefers-reduced-motion: reduce) { .game-mode-tab {transition:none;} }
+
+/* Quick orders also remain discoverable on touch devices. */
+.game-cmd-hint { cursor:pointer; font:inherit; }
+.game-cmd-hint:hover, .game-cmd-hint:focus-visible { background:#fff0d0; outline:2px solid #a66343; }
+@media (max-width:950px) {
+  .game-cmd-hint {display:block; min-width:112px; padding:9px;}
+  .game-cmd-hint strong {font-size:12px;}
+}
+@media (max-width:650px) {
+  .game-cmd-hint {min-width:68px; padding:7px 6px; text-align:center;}
+  .game-cmd-hint span {font-size:8px; letter-spacing:0;}
+  .game-cmd-hint strong {display:none;}
+}
